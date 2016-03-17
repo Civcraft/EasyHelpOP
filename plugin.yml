@@ -1,0 +1,17 @@
+name: SpecialTools
+main: com.bigbrainiac10.simplehelpop.SimpleHelpOp
+version: 1.0
+author: bigbrainiac10
+description: Allow players to request help.
+commands:
+   helpop:
+      description: Send a message for help
+      usage: /helpop {message}
+   replyhelpop:
+      description: Reply to a message for help
+      usage: /replyhelpop
+      permission: simplehelpop.requesthelp
+   questionshelpop:
+      description: List all unanswered questions
+      usage: /replyhelpop
+      permission: simplehelpop.replyhelp

@@ -1,0 +1,7 @@
+debug: true
+db:
+ user: "root"
+ pass: "root"
+ hostname: "localhost"
+ dbname: "simple_op_help"
+ port: 3306
