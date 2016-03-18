@@ -30,4 +30,8 @@ public class SHOConfigManager {
 		return config.getString("db.dbname");
 	}
 	
+	public static String getHelperAlert(){
+		return config.getString("msg.helperAlert");
+	}
+	
 }

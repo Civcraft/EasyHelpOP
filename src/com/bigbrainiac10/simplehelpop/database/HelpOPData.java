@@ -8,18 +8,34 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.logging.Level;
+
+import org.bukkit.Bukkit;
 
 import com.bigbrainiac10.simplehelpop.HelpQuestion;
 import com.bigbrainiac10.simplehelpop.SimpleHelpOp;
+import com.bigbrainiac10.simplehelpop.events.QuestionCreatedEvent;
 
 public class HelpOPData {
 	private Database db;
 	private SimpleHelpOp plugin = SimpleHelpOp.getInstance();
 	
+	//private List<HelpQuestion> questionList;
+	
+	private int lastHelpID;
+	
 	public HelpOPData(Database db){
 		this.db = db;
 		if(db.connect()){
 			createTables();
+		}
+		
+		//this.questionList = new ArrayList<HelpQuestion>();
+		try {
+			this.lastHelpID = getLastID();
+		} catch(SQLException e){
+			plugin.getLogger().log(Level.SEVERE, "Wasn't able to get the ", e);
+			plugin.getServer().getPluginManager().disablePlugin(plugin);
 		}
 	}
 	
@@ -31,6 +47,7 @@ public class HelpOPData {
 				+ "question text NOT NULL,"
 				+ "reply_time int,"
 				+ "replier_uuid varchar(128),"
+				+ "reply text,"
 				+ "PRIMARY KEY(help_id));");
 	}
 	
@@ -41,7 +58,23 @@ public class HelpOPData {
 		db.connect();
 	}
 	
-	public HelpQuestion[] getUnansweredQuestions() throws SQLException{
+	private int getLastID() throws SQLException{
+		reconnect();
+		
+		PreparedStatement ps = db.prepareStatement("SELECT LAST_INSERT_ID();");
+		Object object_lastID = ps.executeQuery().getInt(1);
+		int lastID;
+		
+		try{
+			lastID = (int)object_lastID;
+		}catch(Exception e){
+			lastID = 0;
+		}
+		
+		return lastID;
+	}
+	
+	public List<HelpQuestion> getUnansweredQuestions() throws SQLException{
 		reconnect();
 		PreparedStatement ps = db.prepareStatement("SELECT * FROM help_requests WHERE reply_time IS NULL");
 		ResultSet results = ps.executeQuery();
@@ -58,30 +91,39 @@ public class HelpOPData {
 		}
 		
 		
-		return (HelpQuestion[])unansweredQuestions.toArray();
+		return unansweredQuestions;
 	}
 	
 	public boolean addQuestion(String askerUUID, String question) throws SQLException{
 		PreparedStatement ps = db.prepareStatement("INSERT INTO help_requests(ask_time, asker_uuid, question) VALUES(?,?,?);");
-		ps.setTimestamp(1, new Timestamp(Calendar.getInstance().getTime().getTime()));
+		
+		Timestamp time = new Timestamp(Calendar.getInstance().getTime().getTime());
+		
+		ps.setTimestamp(1, time);
 		ps.setString(2, askerUUID);
 		ps.setString(3, question);
 		
+		HelpQuestion helpQuestion = new HelpQuestion(lastHelpID+1, time, askerUUID, question);
+		lastHelpID++;
+		
+		Bukkit.getServer().getPluginManager().callEvent(new QuestionCreatedEvent(helpQuestion));
 		
 		return false;
 	}
 	
 	public boolean updateQuestion(HelpQuestion question) throws SQLException{
-		PreparedStatement ps = db.prepareStatement("UPDATE help_requests SET ask_time=?, asker_uuid=?, question=?, reply_time=?, replier_uuid=? WHERE help_id=?;");
+		PreparedStatement ps = db.prepareStatement("UPDATE help_requests SET ask_time=?, asker_uuid=?, question=?, reply_time=?, replier_uuid=? reply=? WHERE help_id=?;");
 		
 		ps.setTimestamp(1, question.ask_time);
 		ps.setString(2, question.asker_uuid);
 		ps.setString(3, question.getQuestion());
 		ps.setTimestamp(4, question.replyTime);
 		ps.setString(5, question.replier_uuid);
-		ps.setInt(6, question.getEntryID());
+		ps.setString(6, question.reply);
+		ps.setInt(7, question.getEntryID());
 		
 		int rowsAffected = ps.executeUpdate();
+		
 		return rowsAffected > 0;
 	}
 	

@@ -39,16 +39,8 @@ public class HelpQuestion {
 		this.answered = false;
 	}
 	
-	public boolean updateQuestionInDB(){
-		return true;
-	}
-	
 	public boolean isAnswered(){
 		return this.answered;
-	}
-	
-	public void setReplyTime(Timestamp time){
-		this.replyTime = time;
 	}
 	
 	public String getQuestion(){

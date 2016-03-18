@@ -14,6 +14,9 @@ public class ReplyHelpOPCommand implements CommandExecutor {
 		
 		Player player = (Player)sender;
 		
+		if(!(player.hasPermission("simplehelpop.replyhelp")))
+			return false;
+		
 		
 		return false;
 	}

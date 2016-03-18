@@ -5,3 +5,5 @@ db:
  hostname: "localhost"
  dbname: "simple_op_help"
  port: 3306
+msg:
+ helperAlert: Another player (%PLAYER%) needs our help, I'll mark it on your map. (/replyhelp %ID% [MESSAGE])

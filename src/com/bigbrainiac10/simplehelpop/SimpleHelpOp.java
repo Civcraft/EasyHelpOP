@@ -1,17 +1,20 @@
 package com.bigbrainiac10.simplehelpop;
 
+import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.bigbrainiac10.simplehelpop.database.Database;
+import com.bigbrainiac10.simplehelpop.database.HelpOPData;
 
 public class SimpleHelpOp extends JavaPlugin{
 
 	private static Database _db;
 	private static SimpleHelpOp _instance;
 	private static Logger _logger;
+	private static HelpOPData helpData;
 	
 	public void onEnable(){
 		_instance = this;
@@ -22,6 +25,7 @@ public class SimpleHelpOp extends JavaPlugin{
 		new SHOConfigManager(getConfig());
 		
 		initializeDatabase();
+		HelpOPData helpData = new HelpOPData(_db);
 		
 		registerListeners();
 		registerCommands();
@@ -41,6 +45,10 @@ public class SimpleHelpOp extends JavaPlugin{
 	
 	public static SimpleHelpOp getInstance(){
 		return _instance;
+	}
+	
+	public HelpOPData getHelpOPData(){
+		return helpData;
 	}
 	
 	private void initializeDatabase(){
