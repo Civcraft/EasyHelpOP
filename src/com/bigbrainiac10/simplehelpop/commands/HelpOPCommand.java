@@ -11,12 +11,15 @@ import org.bukkit.entity.Player;
 
 import com.bigbrainiac10.simplehelpop.SHOConfigManager;
 import com.bigbrainiac10.simplehelpop.SimpleHelpOp;
+import com.bigbrainiac10.simplehelpop.Utility;
+import com.bigbrainiac10.simplehelpop.database.HelpOPData;
 
 import net.md_5.bungee.api.ChatColor;
 
 public class HelpOPCommand implements CommandExecutor {
 
 	private SimpleHelpOp plugin = SimpleHelpOp.getInstance();
+	private final String addedMsg = Utility.safeToColor(SHOConfigManager.getPlayerMessage("questionAdded"));
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -32,25 +35,28 @@ public class HelpOPCommand implements CommandExecutor {
 			return false;
 		
 		if(args.length < 1){
-			player.sendMessage(ChatColor.RED + "Usage: /helpop [message]");
+			player.sendMessage(ChatColor.RED + "Usage: /helpop [MESSAGE]");
+			return false;
 		}
 		
 		StringBuilder sb = new StringBuilder();
 		
-		for (int i = 1; i < args.length; i++){
-			sb.append(args[i]).append(" ");
+		for (String arg : args){
+			sb.append(arg).append(" ");
 		}
 		 
-		String allArgs = sb.toString().trim();
+		String message = sb.toString().trim();
 		
 		try {
-			plugin.getHelpOPData().addQuestion(player.getUniqueId().toString(), allArgs);
+			plugin.getHelpOPData().addQuestion(player.getUniqueId().toString(), message);
 		} catch (SQLException e) {
 			plugin.getLogger().log(Level.SEVERE, "Failed to add question.", e);
+			return false;
 		}
 		
+		player.sendMessage(addedMsg);
 		
-		return false;
+		return true;
 	}
 
 }

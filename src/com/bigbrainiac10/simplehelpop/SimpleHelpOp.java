@@ -6,15 +6,20 @@ import java.util.logging.Logger;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.bigbrainiac10.simplehelpop.commands.HelpOPCommand;
+import com.bigbrainiac10.simplehelpop.commands.ReplyHelpOPCommand;
+import com.bigbrainiac10.simplehelpop.commands.ViewUnansweredCommand;
 import com.bigbrainiac10.simplehelpop.database.Database;
 import com.bigbrainiac10.simplehelpop.database.HelpOPData;
+import com.bigbrainiac10.simplehelpop.listeners.PlayerListener;
+import com.bigbrainiac10.simplehelpop.listeners.QuestionListener;
 
 public class SimpleHelpOp extends JavaPlugin{
 
 	private static Database _db;
 	private static SimpleHelpOp _instance;
 	private static Logger _logger;
-	private static HelpOPData helpData;
+	private static HelpOPData _helpData;
 	
 	public void onEnable(){
 		_instance = this;
@@ -25,7 +30,7 @@ public class SimpleHelpOp extends JavaPlugin{
 		new SHOConfigManager(getConfig());
 		
 		initializeDatabase();
-		HelpOPData helpData = new HelpOPData(_db);
+		_helpData = new HelpOPData(_db);
 		
 		registerListeners();
 		registerCommands();
@@ -39,7 +44,7 @@ public class SimpleHelpOp extends JavaPlugin{
 		_logger.log(Level.INFO, "[SimpleHelpOp] " + message);
 	}
 	
-	public static Database getDB(){
+	public Database getDB(){
 		return _db;
 	}
 	
@@ -48,7 +53,7 @@ public class SimpleHelpOp extends JavaPlugin{
 	}
 	
 	public HelpOPData getHelpOPData(){
-		return helpData;
+		return _helpData;
 	}
 	
 	private void initializeDatabase(){
@@ -62,11 +67,14 @@ public class SimpleHelpOp extends JavaPlugin{
 	}
 	
 	private void registerListeners(){
-		
+		_instance.getServer().getPluginManager().registerEvents(new QuestionListener(), _instance);
+		_instance.getServer().getPluginManager().registerEvents(new PlayerListener(), _instance);
 	}
 	
 	private void registerCommands(){
-		
+		_instance.getCommand("helpop").setExecutor(new HelpOPCommand());
+		_instance.getCommand("replyhelp").setExecutor(new ReplyHelpOPCommand());
+		_instance.getCommand("viewunanswered").setExecutor(new ViewUnansweredCommand());
 	}
 	
 }

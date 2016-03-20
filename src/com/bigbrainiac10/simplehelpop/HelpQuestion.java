@@ -13,9 +13,9 @@ public class HelpQuestion {
 	public String replier_uuid;
 	public String reply;
 	
-	private boolean answered;
+	private boolean viewed;
 	
-	public HelpQuestion(int entryID, Timestamp ask_time, String asker_uuid, String question, Timestamp replyTime, String replier_uuid, String reply){
+	public HelpQuestion(int entryID, Timestamp ask_time, String asker_uuid, String question, Timestamp replyTime, String replier_uuid, String reply, boolean viewed){
 		this.entryID = entryID;
 		this.ask_time = ask_time;
 		this.asker_uuid = asker_uuid;
@@ -23,8 +23,7 @@ public class HelpQuestion {
 		this.replyTime = replyTime;
 		this.replier_uuid = replier_uuid;
 		this.reply = reply;
-		
-		this.answered = true;
+		this.viewed = viewed;
 	}
 	
 	public HelpQuestion(int entryID, Timestamp ask_time, String asker_uuid, String question){
@@ -35,12 +34,11 @@ public class HelpQuestion {
 		this.replyTime = null;
 		this.replier_uuid = null;
 		this.reply = null;
-		
-		this.answered = false;
+		this.viewed = false;
 	}
 	
-	public boolean isAnswered(){
-		return this.answered;
+	public boolean getViewed(){
+		return this.viewed;
 	}
 	
 	public String getQuestion(){

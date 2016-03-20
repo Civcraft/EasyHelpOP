@@ -30,8 +30,19 @@ public class SHOConfigManager {
 		return config.getString("db.dbname");
 	}
 	
+	/*
 	public static String getHelperAlert(){
 		return config.getString("msg.helperAlert");
+	}
+	*/
+	
+	public static String getPlayerMessage(String configName){
+		return config.getString("msg."+configName);
+	}
+	
+	
+	public static boolean getDebug(){
+		return config.getBoolean("debug");
 	}
 	
 }

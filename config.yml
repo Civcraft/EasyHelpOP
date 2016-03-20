@@ -6,4 +6,6 @@ db:
  dbname: "simple_op_help"
  port: 3306
 msg:
- helperAlert: Another player (%PLAYER%) needs our help, I'll mark it on your map. (/replyhelp %ID% [MESSAGE])
+ helperAlert: "&1Another player &9(%PLAYER%) &1needs our help, I'll mark it on your map. &9(/replyhelp %ID% [MESSAGE])"
+ questionAdded: "&1Your question was sent!"
+ replyAdded: "&1Your reply was sent!"
