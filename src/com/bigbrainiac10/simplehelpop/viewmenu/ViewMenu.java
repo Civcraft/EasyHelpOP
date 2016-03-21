@@ -1,12 +1,15 @@
-package com.bigbrainiac10.simplehelpop;
+package com.bigbrainiac10.simplehelpop.viewmenu;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.conversations.Conversation;
+import org.bukkit.conversations.ConversationFactory;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -15,6 +18,9 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+
+import com.bigbrainiac10.simplehelpop.HelpQuestion;
+import com.bigbrainiac10.simplehelpop.SimpleHelpOp;
 
 public class ViewMenu implements Listener {
 
@@ -70,7 +76,7 @@ public class ViewMenu implements Listener {
 					"Question ID: "+question.getEntryID(), 
 					Arrays.asList("Sent in by: "+Bukkit.getServer().getOfflinePlayer(UUID.fromString(question.asker_uuid)).getName(), 
 							ChatColor.GRAY + "Question:", 
-							ChatColor.GRAY + "" + ChatColor.ITALIC + question.getQuestion()));
+							ChatColor.GRAY + "" + ChatColor.ITALIC + WordUtils.wrap(question.getQuestion(), 20)));
 				
 			inv.addItem(item);
 			
@@ -123,6 +129,10 @@ public class ViewMenu implements Listener {
 			player.closeInventory();
 			inv = generateInventory();
 			showInventory();
+		}else if(item.getItemMeta().getDisplayName().contains("Question ID")){
+			ConversationFactory cf = new ConversationFactory(plugin);
+			Conversation conv = cf.withFirstPrompt(new ReplyQuestionConversation()).withLocalEcho(true).withEscapeSequence("cancel").buildConversation(eventPlayer);
+			conv.begin();
 		}
 	}
 	

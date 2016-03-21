@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 import com.bigbrainiac10.simplehelpop.SHOConfigManager;
 import com.bigbrainiac10.simplehelpop.SimpleHelpOp;
 import com.bigbrainiac10.simplehelpop.Utility;
-import com.bigbrainiac10.simplehelpop.ViewMenu;
+import com.bigbrainiac10.simplehelpop.viewmenu.ViewMenu;
 
 public class ViewUnansweredCommand implements CommandExecutor {
 
