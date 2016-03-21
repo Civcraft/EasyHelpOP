@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 package com.bigbrainiac10.simplehelpop.listeners;
 
 import org.bukkit.entity.Player;
@@ -26,13 +25,3 @@ public class PlayerListener implements Listener {
 	}
 	
 }
-=======
-package com.bigbrainiac10.simplehelpop.listeners;
-
-import org.bukkit.event.Listener;
-
-public class PlayerListener implements Listener {
-	
-	
-}
->>>>>>> 3ba9d0140ec71b8c634cc384b95303aba29055a7

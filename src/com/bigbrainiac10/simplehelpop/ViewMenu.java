@@ -34,7 +34,7 @@ public class ViewMenu implements Listener {
 	public ViewMenu(List<HelpQuestion> questions, String title, Player player){
 		this.questions = questions;
 		
-		float roundedPages = Math.round((float)this.questions.size()/45);
+		double roundedPages = Math.ceil((float)this.questions.size()/45);
 		this.pageNumMax = ((int)roundedPages > 0) ? (int)roundedPages : 1;
 		
 		this.title = title;
@@ -52,10 +52,13 @@ public class ViewMenu implements Listener {
 	
 	public void setPageNum(int num){
 		pageNum = Math.max(1, Math.min(pageNumMax, num));
+		plugin.Log("Page Number: "+pageNum);
+		plugin.Log("Max Page Number: "+pageNumMax);
+		
 	}
 	
 	public Inventory generateInventory(){
-		Inventory inv = Bukkit.getServer().createInventory(null, 54, title+" - Page #"+pageNum);
+		Inventory inv = Bukkit.createInventory(player, 54, title+" - Page #"+pageNum);
 		
 		for(int i=(pageNum*45)-45; i<pageNum*45; i++){
 			if(i > questions.size()-1)
@@ -67,7 +70,7 @@ public class ViewMenu implements Listener {
 					"Question ID: "+question.getEntryID(), 
 					Arrays.asList("Sent in by: "+Bukkit.getServer().getOfflinePlayer(UUID.fromString(question.asker_uuid)).getName(), 
 							ChatColor.GRAY + "Question:", 
-							ChatColor.ITALIC + question.getQuestion()));
+							ChatColor.GRAY + "" + ChatColor.ITALIC + question.getQuestion()));
 				
 			inv.addItem(item);
 			
@@ -98,7 +101,9 @@ public class ViewMenu implements Listener {
 	
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onInventoryClick(InventoryClickEvent event){
-		if(!event.getInventory().getName().equalsIgnoreCase(inv.getName()))
+		Player eventPlayer = (Player)event.getWhoClicked();
+		
+		if(!eventPlayer.equals(player))
 			return;
 		
 		event.setCancelled(true);
