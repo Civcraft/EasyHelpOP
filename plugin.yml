@@ -10,8 +10,8 @@ commands:
    replyhelp:
       description: Reply to a message for help
       permission: simplehelpop.replyhelp
-   viewunanswered:
-      description: List all unanswered questions
+   viewhelp:
+      description: List questions based on input
       permission: simplehelpop.replyhelp
    viewquestion:
       description: View a specific question

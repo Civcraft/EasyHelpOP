@@ -7,8 +7,7 @@ import java.util.logging.Logger;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.bigbrainiac10.simplehelpop.commands.HelpOPCommand;
-import com.bigbrainiac10.simplehelpop.commands.ReplyHelpOPCommand;
-import com.bigbrainiac10.simplehelpop.commands.ViewUnansweredCommand;
+import com.bigbrainiac10.simplehelpop.commands.ViewHelpCommand;
 import com.bigbrainiac10.simplehelpop.database.Database;
 import com.bigbrainiac10.simplehelpop.database.HelpOPData;
 import com.bigbrainiac10.simplehelpop.listeners.PlayerListener;
@@ -73,8 +72,7 @@ public class SimpleHelpOp extends JavaPlugin{
 	
 	private void registerCommands(){
 		_instance.getCommand("helpop").setExecutor(new HelpOPCommand());
-		_instance.getCommand("replyhelp").setExecutor(new ReplyHelpOPCommand());
-		_instance.getCommand("viewunanswered").setExecutor(new ViewUnansweredCommand());
+		_instance.getCommand("viewhelp").setExecutor(new ViewHelpCommand());
 	}
 	
 }

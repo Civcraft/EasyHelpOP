@@ -36,8 +36,10 @@ public class ViewMenu implements Listener {
 	private String title;
 	
 	private Player player;
+	
+	private ViewType viewType;
 			
-	public ViewMenu(List<HelpQuestion> questions, String title, Player player){
+	public ViewMenu(List<HelpQuestion> questions, String title, Player player, ViewType viewType){
 		this.questions = questions;
 		
 		double roundedPages = Math.ceil((float)this.questions.size()/45);
@@ -76,7 +78,7 @@ public class ViewMenu implements Listener {
 					"Question ID: "+question.getEntryID(), 
 					Arrays.asList("Sent in by: "+Bukkit.getServer().getOfflinePlayer(UUID.fromString(question.asker_uuid)).getName(), 
 							ChatColor.GRAY + "Question:", 
-							ChatColor.GRAY + "" + ChatColor.ITALIC + WordUtils.wrap(question.getQuestion(), 20)));
+							ChatColor.GRAY + "" + ChatColor.ITALIC + WordUtils.wrap(question.getQuestion(), 20, "\n", false)));
 				
 			inv.addItem(item);
 			
@@ -130,9 +132,25 @@ public class ViewMenu implements Listener {
 			inv = generateInventory();
 			showInventory();
 		}else if(item.getItemMeta().getDisplayName().contains("Question ID")){
-			ConversationFactory cf = new ConversationFactory(plugin);
-			Conversation conv = cf.withFirstPrompt(new ReplyQuestionConversation()).withLocalEcho(true).withEscapeSequence("cancel").buildConversation(eventPlayer);
-			conv.begin();
+			
+			player.closeInventory();
+			
+			if(viewType == ViewType.UNANSWERED){
+				int id = Integer.parseInt(item.getItemMeta().getDisplayName().split(" ")[1]);
+				HelpQuestion q = null;
+				
+				for(HelpQuestion question : questions){
+					if(question.getEntryID() == id){
+						q = question;
+						break;
+					}
+				}
+				
+				
+				ConversationFactory cf = new ConversationFactory(plugin);
+				Conversation conv = cf.withFirstPrompt(new ReplyQuestionConversation(q, player)).withLocalEcho(true).withEscapeSequence("cancel").buildConversation(eventPlayer);
+				conv.begin();
+			}
 		}
 	}
 	

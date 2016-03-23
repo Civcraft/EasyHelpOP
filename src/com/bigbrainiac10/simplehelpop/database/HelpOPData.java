@@ -85,8 +85,24 @@ public class HelpOPData {
 		return lastID;
 	}
 	
-	public List<HelpQuestion> getUnansweredQuestions(){
-		return questionList;
+	public List<HelpQuestion> getAllQuestions() throws SQLException{
+		reconnect();
+		PreparedStatement ps = db.prepareStatement("SELECT * FROM help_requests;");
+		ResultSet results = ps.executeQuery();
+		
+		List<HelpQuestion> unansweredQuestions = new ArrayList<HelpQuestion>();
+		
+		while(results.next()){
+			int helpID = results.getInt("help_id");
+			Timestamp askTime = results.getTimestamp("ask_time");
+			String askerUUID = results.getString("asker_uuid");
+			String question = results.getString("question");
+			
+			unansweredQuestions.add(new HelpQuestion(helpID, askTime, askerUUID, question));
+		}
+		
+		
+		return unansweredQuestions;
 	}
 	
 	public void removeUnansweredQuestion(HelpQuestion question){
@@ -98,9 +114,13 @@ public class HelpOPData {
 		}
 	}
 	
+	public List<HelpQuestion> getUnansweredQuestions(){
+		return questionList;
+	}
+	
 	private List<HelpQuestion> getUnansweredQuestionsFromDB() throws SQLException{
 		reconnect();
-		PreparedStatement ps = db.prepareStatement("SELECT * FROM help_requests WHERE reply IS NULL");
+		PreparedStatement ps = db.prepareStatement("SELECT * FROM help_requests WHERE reply IS NULL;");
 		ResultSet results = ps.executeQuery();
 		
 		List<HelpQuestion> unansweredQuestions = new ArrayList<HelpQuestion>();
