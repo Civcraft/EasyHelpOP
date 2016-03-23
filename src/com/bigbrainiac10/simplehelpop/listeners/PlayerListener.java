@@ -1,5 +1,12 @@
 package com.bigbrainiac10.simplehelpop.listeners;
 
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -19,9 +26,28 @@ public class PlayerListener implements Listener {
 	public void playerJoin(PlayerJoinEvent event){
 		Player player = event.getPlayer();
 		
-		/*for(HelpQuestion question : helpData.getUnansweredQuestions()){
+		List<HelpQuestion> q = new ArrayList<HelpQuestion>();
+		try {
+			q = helpData.getUnviewedQuestions(player);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		for(HelpQuestion question : q){
+			OfflinePlayer p = Bukkit.getOfflinePlayer(UUID.fromString(question.asker_uuid));
 			
-		}*/
+			player.sendMessage(p.getName() + "answered your question!");
+			player.sendMessage("You asked: " + question.getQuestion());
+			player.sendMessage("They replied: "+question.reply);
+			
+			question.setViewed(true);
+			
+			try {
+				helpData.updateQuestion(question);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 }

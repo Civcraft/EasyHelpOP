@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 import com.bigbrainiac10.simplehelpop.HelpQuestion;
 import com.bigbrainiac10.simplehelpop.SHOConfigManager;
@@ -85,6 +86,36 @@ public class HelpOPData {
 		return lastID;
 	}
 	
+<<<<<<< HEAD
+	public List<HelpQuestion> getUnviewedQuestions(Player player) throws SQLException{
+		reconnect();
+		PreparedStatement ps = db.prepareStatement("SELECT * FROM help_requests WHERE asker_uuid=? AND viewed=False;");
+		
+		ps.setString(1, player.getUniqueId().toString());
+		
+		ResultSet results = ps.executeQuery();
+		
+		List<HelpQuestion> unansweredQuestions = new ArrayList<HelpQuestion>();
+		
+		while(results.next()){
+			int helpID = results.getInt("help_id");
+			Timestamp askTime = results.getTimestamp("ask_time");
+			String askerUUID = results.getString("asker_uuid");
+			String question = results.getString("question");
+			Timestamp replyTime = results.getTimestamp("reply_time");
+			String replier_uuid = results.getString("replier_uuid");
+			String reply = results.getString("reply");
+			boolean viewed = results.getBoolean("viewed");
+			
+			unansweredQuestions.add(new HelpQuestion(helpID, askTime, askerUUID, question, replyTime, replier_uuid, reply, viewed));
+		}
+		
+		
+		return unansweredQuestions;
+	}
+	
+=======
+>>>>>>> 0c444d8413c2df75966e8445ce049fd42064bf90
 	public List<HelpQuestion> getAllQuestions() throws SQLException{
 		reconnect();
 		PreparedStatement ps = db.prepareStatement("SELECT * FROM help_requests;");
@@ -97,8 +128,18 @@ public class HelpOPData {
 			Timestamp askTime = results.getTimestamp("ask_time");
 			String askerUUID = results.getString("asker_uuid");
 			String question = results.getString("question");
+<<<<<<< HEAD
+			Timestamp replyTime = results.getTimestamp("reply_time");
+			String replier_uuid = results.getString("replier_uuid");
+			String reply = results.getString("reply");
+			boolean viewed = results.getBoolean("viewed");
+			
+			//unansweredQuestions.add(new HelpQuestion(helpID, askTime, askerUUID, question));
+			unansweredQuestions.add(new HelpQuestion(helpID, askTime, askerUUID, question, replyTime, replier_uuid, reply, viewed));
+=======
 			
 			unansweredQuestions.add(new HelpQuestion(helpID, askTime, askerUUID, question));
+>>>>>>> 0c444d8413c2df75966e8445ce049fd42064bf90
 		}
 		
 		
@@ -114,6 +155,22 @@ public class HelpOPData {
 		}
 	}
 	
+<<<<<<< HEAD
+	public HelpQuestion getUnansweredByID(int id){
+		HelpQuestion q = null;
+		
+		for(HelpQuestion question : questionList){
+			if(question.getEntryID() == id){
+				q = question;
+				break;
+			}
+		}
+		
+		return q;
+	}
+	
+=======
+>>>>>>> 0c444d8413c2df75966e8445ce049fd42064bf90
 	public List<HelpQuestion> getUnansweredQuestions(){
 		return questionList;
 	}

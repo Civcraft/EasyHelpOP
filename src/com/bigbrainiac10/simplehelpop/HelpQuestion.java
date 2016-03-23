@@ -37,6 +37,10 @@ public class HelpQuestion {
 		this.viewed = false;
 	}
 	
+	public void setViewed(boolean viewed){
+		this.viewed = viewed;
+	}
+	
 	public boolean getViewed(){
 		return this.viewed;
 	}

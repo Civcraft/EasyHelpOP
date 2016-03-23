@@ -12,7 +12,7 @@ public class Utility {
 		return str.replace(ChatColor.COLOR_CHAR, '&');
 	}
 	
-	/*
+
 	public static String loreWrap(String str){
 		if(str.length() < 20){
 			return str;
@@ -36,6 +36,5 @@ public class Utility {
 		
 		return wrappedString;
 	}
-	*/
 	
 }
