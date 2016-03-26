@@ -24,22 +24,12 @@ public class HelpOPData {
 	
 	private List<HelpQuestion> questionList;
 	
-	private int lastHelpID;
-	
 	public HelpOPData(Database db){
 		this.db = db;
 		if(db.connect()){
 			createTables();
 		}
 		
-		try {
-			this.lastHelpID = getLastID();
-		} catch(SQLException e){
-			this.lastHelpID = 0;
-			plugin.getLogger().log(Level.SEVERE, "Wasn't able to get the last ID", e);
-			plugin.getServer().getPluginManager().disablePlugin(plugin);
-		}
-		//this.questionList = new ArrayList<HelpQuestion>();
 		try {
 			this.questionList = getUnansweredQuestionsFromDB();
 		} catch (SQLException e) {
@@ -51,43 +41,29 @@ public class HelpOPData {
 		db.execute("CREATE TABLE IF NOT EXISTS help_requests("
 				+ "help_id int NOT NULL AUTO_INCREMENT,"
 				+ "ask_time timestamp NOT NULL,"
-				+ "asker_uuid varchar(128) NOT NULL,"
+				+ "asker_uuid varchar(36) NOT NULL,"
 				+ "question text NOT NULL,"
 				+ "reply_time timestamp,"
-				+ "replier_uuid varchar(128),"
+				+ "replier_uuid varchar(36),"
 				+ "reply text,"
 				+ "viewed bool NOT NULL,"
 				+ "PRIMARY KEY(help_id));");
 	}
 	
-	private void reconnect(){
-		if(db.isConnected())
-			return;
+	public HelpQuestion extractHelpQuestion(ResultSet results) throws SQLException {
+		int helpID = results.getInt("help_id");
+		Timestamp askTime = results.getTimestamp("ask_time");
+		String askerUUID = results.getString("asker_uuid");
+		String question = results.getString("question");
+		Timestamp replyTime = results.getTimestamp("reply_time");
+		String replier_uuid = results.getString("replier_uuid");
+		String reply = results.getString("reply");
+		boolean viewed = results.getBoolean("viewed");
 		
-		db.connect();
-	}
-	
-	private int getLastID() throws SQLException{
-		reconnect();
-		
-		PreparedStatement ps = db.prepareStatement("SELECT AUTO_INCREMENT FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = ? AND TABLE_NAME = 'help_requests';");
-		ps.setString(1, SHOConfigManager.getDBName());
-		
-		ResultSet results = ps.executeQuery();
-		
-		int lastID;
-		
-		if(results.next()){
-			lastID = results.getInt(1);
-		}else{
-			lastID = 0;
-		}
-		
-		return lastID;
+		return new HelpQuestion(helpID, askTime, askerUUID, question, replyTime, replier_uuid, reply, viewed);
 	}
 	
 	public List<HelpQuestion> getUnviewedQuestions(Player player) throws SQLException{
-		reconnect();
 		PreparedStatement ps = db.prepareStatement("SELECT * FROM help_requests WHERE asker_uuid=? AND viewed=False;");
 		
 		ps.setString(1, player.getUniqueId().toString());
@@ -97,44 +73,20 @@ public class HelpOPData {
 		List<HelpQuestion> unansweredQuestions = new ArrayList<HelpQuestion>();
 		
 		while(results.next()){
-			int helpID = results.getInt("help_id");
-			Timestamp askTime = results.getTimestamp("ask_time");
-			String askerUUID = results.getString("asker_uuid");
-			String question = results.getString("question");
-			Timestamp replyTime = results.getTimestamp("reply_time");
-			String replier_uuid = results.getString("replier_uuid");
-			String reply = results.getString("reply");
-			boolean viewed = results.getBoolean("viewed");
-			
-			unansweredQuestions.add(new HelpQuestion(helpID, askTime, askerUUID, question, replyTime, replier_uuid, reply, viewed));
+			unansweredQuestions.add(extractHelpQuestion(results));
 		}
-		
-		
 		return unansweredQuestions;
 	}
 	
 	public List<HelpQuestion> getAllQuestions() throws SQLException{
-		reconnect();
 		PreparedStatement ps = db.prepareStatement("SELECT * FROM help_requests;");
 		ResultSet results = ps.executeQuery();
 		
 		List<HelpQuestion> unansweredQuestions = new ArrayList<HelpQuestion>();
 		
 		while(results.next()){
-			int helpID = results.getInt("help_id");
-			Timestamp askTime = results.getTimestamp("ask_time");
-			String askerUUID = results.getString("asker_uuid");
-			String question = results.getString("question");
-			Timestamp replyTime = results.getTimestamp("reply_time");
-			String replier_uuid = results.getString("replier_uuid");
-			String reply = results.getString("reply");
-			boolean viewed = results.getBoolean("viewed");
-			
-			//unansweredQuestions.add(new HelpQuestion(helpID, askTime, askerUUID, question));
-			unansweredQuestions.add(new HelpQuestion(helpID, askTime, askerUUID, question, replyTime, replier_uuid, reply, viewed));
+			unansweredQuestions.add(extractHelpQuestion(results));
 		}
-		
-		
 		return unansweredQuestions;
 	}
 	
@@ -165,50 +117,53 @@ public class HelpOPData {
 	}
 	
 	private List<HelpQuestion> getUnansweredQuestionsFromDB() throws SQLException{
-		reconnect();
 		PreparedStatement ps = db.prepareStatement("SELECT * FROM help_requests WHERE reply IS NULL;");
 		ResultSet results = ps.executeQuery();
 		
 		List<HelpQuestion> unansweredQuestions = new ArrayList<HelpQuestion>();
 		
 		while(results.next()){
-			int helpID = results.getInt("help_id");
-			Timestamp askTime = results.getTimestamp("ask_time");
-			String askerUUID = results.getString("asker_uuid");
-			String question = results.getString("question");
-			
-			unansweredQuestions.add(new HelpQuestion(helpID, askTime, askerUUID, question));
+			unansweredQuestions.add(extractHelpQuestion(results));
 		}
-		
-		
 		return unansweredQuestions;
 	}
 	
-	public boolean addQuestion(String askerUUID, String question) throws SQLException{
-		reconnect();
+	public HelpQuestion addQuestion(String askerUUID, String question) throws SQLException{
 		PreparedStatement ps = db.prepareStatement("INSERT INTO help_requests(ask_time, asker_uuid, question, viewed) VALUES(?,?,?,?);");
-		
-		Timestamp time = new Timestamp(Calendar.getInstance().getTime().getTime());
+
+		Timestamp time = Timestamp.from(Instant.now());
 		
 		ps.setTimestamp(1, time);
 		ps.setString(2, askerUUID);
 		ps.setString(3, question);
 		ps.setBoolean(4, false);
-		
+
 		ps.executeUpdate();
 		
-		HelpQuestion helpQuestion = new HelpQuestion(lastHelpID, time, askerUUID, question);
-		lastHelpID++;
+		ResultSet rs = ps.getGeneratedKeys();
+		
+		HelpQuestion helpQuestion = null;
+		
+		if (rs.next()) {
+			helpQuestion = new HelpQuestion(rs.getInt(1), time, askerUUID, question);
+		} else {
+			SimpleHelpOp.Log("Using fallback last insert id retrieval");
+			ps = db.prepareStatement("SELECT LAST_INSERT_ID();");
+			ps.execute();
+			rs = ps.getResultSet();
+			if (rs.next()) {
+				helpQuestion = new HelpQuestion(rs.getInt(1), time, askerUUID, question);
+			} else {
+				throw new SQLException("Unable to retrieve last insert ID!");
+			}
+		}
 		
 		questionList.add(helpQuestion);
 		
-		Bukkit.getServer().getPluginManager().callEvent(new QuestionCreatedEvent(helpQuestion));
-		
-		return false;
+		return helpQuestion;
 	}
 	
 	public boolean updateQuestion(HelpQuestion question) throws SQLException{
-		reconnect();
 		PreparedStatement ps = db.prepareStatement("UPDATE help_requests SET ask_time=?, asker_uuid=?, question=?, reply_time=?, replier_uuid=?, reply=?, viewed=? WHERE help_id=?;");
 		
 		ps.setTimestamp(1, question.ask_time);

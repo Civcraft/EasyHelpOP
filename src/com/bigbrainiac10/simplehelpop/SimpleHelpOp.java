@@ -1,6 +1,5 @@
 package com.bigbrainiac10.simplehelpop;
 
-import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -40,9 +39,17 @@ public class SimpleHelpOp extends JavaPlugin{
 	}
 	
 	public static void Log(String message){
-		_logger.log(Level.INFO, "[SimpleHelpOp] " + message);
+		Log(Level.INFO, message);
 	}
-	
+
+	public static void Log(String message, Object...vars){
+		Log(Level.INFO, message, vars);
+	}
+
+	public static void Log(Level level, String message, Object...vars){
+		_logger.log(level, "[SimpleHelpOp] " + message, vars);
+	}
+
 	public Database getDB(){
 		return _db;
 	}
@@ -55,6 +62,7 @@ public class SimpleHelpOp extends JavaPlugin{
 		return _helpData;
 	}
 	
+	// TODO: Refactor into handler.
 	private void initializeDatabase(){
 		String host = SHOConfigManager.getHostName();
 		String user = SHOConfigManager.getUserName();

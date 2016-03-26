@@ -8,4 +8,5 @@ db:
 msg:
  helperAlert: "&1Another player &9(%PLAYER%) &1needs our help, I'll mark it on your map. &9(/replyhelp %ID% [MESSAGE])"
  questionAdded: "&1Your question was sent!"
+ questionFailure: "&fFailed to ask your question, please try again."
  replyAdded: "&1Your reply was sent!"
