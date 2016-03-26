@@ -10,7 +10,6 @@ import org.bukkit.conversations.StringPrompt;
 import org.bukkit.entity.Player;
 
 import com.bigbrainiac10.simplehelpop.HelpQuestion;
-<<<<<<< HEAD
 import com.bigbrainiac10.simplehelpop.SimpleHelpOp;
 
 public class ReplyQuestionConversation extends StringPrompt{
@@ -20,14 +19,6 @@ public class ReplyQuestionConversation extends StringPrompt{
 	private HelpQuestion question;
 	private Player player;
 	
-=======
-
-public class ReplyQuestionConversation extends StringPrompt{
-
-	private HelpQuestion question;
-	private Player player;
-	
->>>>>>> 0c444d8413c2df75966e8445ce049fd42064bf90
 	public ReplyQuestionConversation(HelpQuestion question, Player player){
 		this.question = question;
 		this.player = player;
