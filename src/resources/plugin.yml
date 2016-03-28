@@ -1,0 +1,25 @@
+name: ${project.name}
+main: com.bigbrainiac10.simplehelpop.SimpleHelpOp
+version: ${project.version}
+author: bigbrainiac10
+description: Allow players to request help.
+commands:
+  helpop:
+    description: Send a message for help
+    alias: ho
+    permission: simplehelpop.requesthelp
+    usage: /helpop [MESSAGE]
+  viewhelp:
+    description: List and reply to questions in an interactive setting.
+    permission: simplehelpop.replyhelp
+    usage: /viewhelp [all|id|name [ID|NAME]
+permissions:
+  simplehelpop.*
+    description: Grant all simplehelpop permissions
+    simplehelpop.requesthelp: true
+    simplehelpop.replyhelp: true
+  simplehelpop.requesthelp:
+    description: Allow a player to request help
+  simplehelpop.replyhelp:
+    description: Allow a player to reply to a question
+    default: op

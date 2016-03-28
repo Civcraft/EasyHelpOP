@@ -38,6 +38,7 @@ public class QuestionListener implements Listener {
 	public void questionAnswered(QuestionAnsweredEvent event){
 		HelpQuestion question = event.getQuestion();
 		
+		// TODO alert player if online.
 	}
 	
 }

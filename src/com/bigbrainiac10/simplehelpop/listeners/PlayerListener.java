@@ -34,9 +34,9 @@ public class PlayerListener implements Listener {
 		}
 		
 		for(HelpQuestion question : q){
-			OfflinePlayer p = Bukkit.getOfflinePlayer(UUID.fromString(question.asker_uuid));
+			OfflinePlayer p = Bukkit.getOfflinePlayer(UUID.fromString(question.replier_uuid));
 			
-			player.sendMessage(p.getName() + "answered your question!");
+			player.sendMessage(p.getName() + " answered your question!");
 			player.sendMessage("You asked: " + question.getQuestion());
 			player.sendMessage("They replied: "+question.reply);
 			
