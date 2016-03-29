@@ -6,17 +6,14 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Level;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import com.bigbrainiac10.simplehelpop.HelpQuestion;
-import com.bigbrainiac10.simplehelpop.SHOConfigManager;
 import com.bigbrainiac10.simplehelpop.SimpleHelpOp;
-import com.bigbrainiac10.simplehelpop.events.QuestionCreatedEvent;
 
 public class HelpOPData {
 	private Database db;
@@ -64,9 +61,32 @@ public class HelpOPData {
 	}
 	
 	public List<HelpQuestion> getUnviewedQuestions(Player player) throws SQLException{
+		if (player == null) {
+			SimpleHelpOp.Log(Level.WARNING, "Unable to get unviewed questions for a null player");
+			return new ArrayList<HelpQuestion>();
+		}
 		PreparedStatement ps = db.prepareStatement("SELECT * FROM help_requests WHERE asker_uuid=? AND viewed=False;");
 		
 		ps.setString(1, player.getUniqueId().toString());
+		
+		ResultSet results = ps.executeQuery();
+		
+		List<HelpQuestion> unviewedQuestions = new ArrayList<HelpQuestion>();
+		
+		while(results.next()){
+			unviewedQuestions.add(extractHelpQuestion(results));
+		}
+		return unviewedQuestions;
+	}
+	
+	public List<HelpQuestion> getUnansweredQuestions(UUID player) throws SQLException{
+		if (player == null) {
+			SimpleHelpOp.Log(Level.WARNING, "Unable to get unanswered questions for a null player");
+			return new ArrayList<HelpQuestion>();
+		}
+		PreparedStatement ps = db.prepareStatement("SELECT * FROM help_requests WHERE asker_uuid=? AND reply IS NULL;");
+		
+		ps.setString(1, player.toString());
 		
 		ResultSet results = ps.executeQuery();
 		
@@ -82,12 +102,12 @@ public class HelpOPData {
 		PreparedStatement ps = db.prepareStatement("SELECT * FROM help_requests;");
 		ResultSet results = ps.executeQuery();
 		
-		List<HelpQuestion> unansweredQuestions = new ArrayList<HelpQuestion>();
+		List<HelpQuestion> allQuestions = new ArrayList<HelpQuestion>();
 		
 		while(results.next()){
-			unansweredQuestions.add(extractHelpQuestion(results));
+			allQuestions.add(extractHelpQuestion(results));
 		}
-		return unansweredQuestions;
+		return allQuestions;
 	}
 	
 	public void removeUnansweredQuestion(HelpQuestion question){
@@ -102,7 +122,7 @@ public class HelpOPData {
 	public HelpQuestion getUnansweredByID(int id){
 		HelpQuestion q = null;
 		
-		for(HelpQuestion question : questionList){
+		for(HelpQuestion question : getUnansweredQuestions()){
 			if(question.getEntryID() == id){
 				q = question;
 				break;
@@ -113,6 +133,14 @@ public class HelpOPData {
 	}
 	
 	public List<HelpQuestion> getUnansweredQuestions(){
+		if (questionList == null || questionList.size() == 0) {
+			try {
+				questionList = getUnansweredQuestionsFromDB();
+			} catch (SQLException se) {
+				SimpleHelpOp.Log(Level.WARNING, "Unable to refresh question list from database", se);
+				questionList = new ArrayList<>();
+			}
+		}
 		return questionList;
 	}
 	

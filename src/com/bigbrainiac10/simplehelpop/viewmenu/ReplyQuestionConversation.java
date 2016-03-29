@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Calendar;
 
+import org.bukkit.Bukkit;
 import org.bukkit.conversations.ConversationContext;
 import org.bukkit.conversations.Prompt;
 import org.bukkit.conversations.StringPrompt;
@@ -11,6 +12,7 @@ import org.bukkit.entity.Player;
 
 import com.bigbrainiac10.simplehelpop.HelpQuestion;
 import com.bigbrainiac10.simplehelpop.SimpleHelpOp;
+import com.bigbrainiac10.simplehelpop.events.QuestionAnsweredEvent;
 
 public class ReplyQuestionConversation extends StringPrompt{
 
@@ -34,6 +36,8 @@ public class ReplyQuestionConversation extends StringPrompt{
 		
 		try {
 			plugin.getHelpOPData().updateQuestion(question);
+			QuestionAnsweredEvent qe = new QuestionAnsweredEvent(question);
+			Bukkit.getServer().getPluginManager().callEvent(qe);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

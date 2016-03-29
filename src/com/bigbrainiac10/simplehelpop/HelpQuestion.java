@@ -1,7 +1,6 @@
 package com.bigbrainiac10.simplehelpop;
 
 import java.sql.Timestamp;
-import java.util.UUID;
 
 public class HelpQuestion {
 

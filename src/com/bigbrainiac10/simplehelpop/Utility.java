@@ -1,7 +1,5 @@
 package com.bigbrainiac10.simplehelpop;
 
-import java.util.logging.Level;
-
 import org.bukkit.ChatColor;
 
 public class Utility {

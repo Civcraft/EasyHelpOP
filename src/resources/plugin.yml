@@ -14,7 +14,7 @@ commands:
     permission: simplehelpop.replyhelp
     usage: /viewhelp [all|id|name [ID|NAME]
 permissions:
-  simplehelpop.*
+  simplehelpop.*:
     description: Grant all simplehelpop permissions
     simplehelpop.requesthelp: true
     simplehelpop.replyhelp: true

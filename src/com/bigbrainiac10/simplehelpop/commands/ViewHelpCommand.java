@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -42,7 +43,6 @@ public class ViewHelpCommand implements CommandExecutor {
 				new ViewMenu(aq, "Question Viewer" , player, ViewType.ALL);
 				return true;
 			}else if(args.length >= 2) {
-				// TODO refactor etc.
 				List<HelpQuestion> aq = null;
 				if (args[0].equalsIgnoreCase("id")){
 					try {
@@ -60,9 +60,11 @@ public class ViewHelpCommand implements CommandExecutor {
 					}
 				}else if(args[0].equalsIgnoreCase("name")){
 					try {
-						Player pq = Bukkit.getPlayer(args[1]);
+						OfflinePlayer pq = Bukkit.getOfflinePlayer(args[1]);
 						if (pq != null) {
-							aq = plugin.getHelpOPData().getUnviewedQuestions(pq);
+							aq = plugin.getHelpOPData().getUnansweredQuestions(pq.getUniqueId());
+						} else {
+							player.sendMessage("Player by that name not found");
 						}
 						if (aq != null) {
 							new ViewMenu(aq, "Question Viewer", player, ViewType.NAME);

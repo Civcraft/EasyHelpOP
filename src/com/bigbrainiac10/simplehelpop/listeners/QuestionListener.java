@@ -1,5 +1,6 @@
 package com.bigbrainiac10.simplehelpop.listeners;
 
+import java.sql.SQLException;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -37,8 +38,21 @@ public class QuestionListener implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void questionAnswered(QuestionAnsweredEvent event){
 		HelpQuestion question = event.getQuestion();
-		
-		// TODO alert player if online.
+		Player p = null;
+		if ((p = Bukkit.getPlayer(UUID.fromString(question.asker_uuid))) != null) {
+			p.sendMessage(p.getName() + " answered your question!");
+			p.sendMessage("You asked: " + question.getQuestion());
+			p.sendMessage("They replied: "+ question.reply);
+			
+			question.setViewed(true);
+			
+			try {
+				plugin.getHelpOPData().updateQuestion(question);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+
+		}
 	}
 	
 }

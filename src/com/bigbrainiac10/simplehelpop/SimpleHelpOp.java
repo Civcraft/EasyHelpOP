@@ -62,7 +62,6 @@ public class SimpleHelpOp extends JavaPlugin{
 		return _helpData;
 	}
 	
-	// TODO: Refactor into handler.
 	private void initializeDatabase(){
 		String host = SHOConfigManager.getHostName();
 		String user = SHOConfigManager.getUserName();
