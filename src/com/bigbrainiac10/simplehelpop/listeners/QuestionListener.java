@@ -28,7 +28,10 @@ public class QuestionListener implements Listener {
 		
 		for(Player player : Bukkit.getServer().getOnlinePlayers()){
 			if(player.hasPermission("simplehelpop.replyhelp")){
-				player.sendMessage(alertMsg.replace("%PLAYER%", Bukkit.getOfflinePlayer(UUID.fromString(question.asker_uuid)).getName()).replace("%ID%", Integer.toString(question.getEntryID())));
+				player.sendMessage( alertMsg
+						.replace("%PLAYER%", Bukkit.getOfflinePlayer(UUID.fromString(question.asker_uuid)).getName())
+						.replace("%MESSAGE%", question.getQuestion())
+						.replace("%ID%", Integer.toString(question.getEntryID())));
 			}
 		}
 		
@@ -38,11 +41,19 @@ public class QuestionListener implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void questionAnswered(QuestionAnsweredEvent event){
 		HelpQuestion question = event.getQuestion();
-		Player p = null;
-		if ((p = Bukkit.getPlayer(UUID.fromString(question.asker_uuid))) != null) {
-			p.sendMessage(p.getName() + " answered your question!");
-			p.sendMessage("You asked: " + question.getQuestion());
-			p.sendMessage("They replied: "+ question.reply);
+		
+		Player p = Bukkit.getPlayer(UUID.fromString(question.replier_uuid));
+		if (p == null) {
+			p = (Player) Bukkit.getOfflinePlayer(UUID.fromString(question.replier_uuid));
+		}
+		Player a = Bukkit.getPlayer(UUID.fromString(question.asker_uuid));
+		if (a != null) {
+			if (p != null) {
+				a.sendMessage(p.getName() + " answered your question!");
+			} else {
+				a.sendMessage("A helper answered your question!");
+			}
+			a.sendMessage("You asked: " + question.getQuestion() + "\nThey replied: "+ question.reply);
 			
 			question.setViewed(true);
 			
@@ -51,8 +62,11 @@ public class QuestionListener implements Listener {
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
-
+			SimpleHelpOp.Log("Player " + Bukkit.getOfflinePlayer(UUID.fromString(question.asker_uuid)).getName() + " received an answer and has seen it. (Help ID " + question.getEntryID() + ")");
+		} else {
+			SimpleHelpOp.Log("Player " + Bukkit.getOfflinePlayer(UUID.fromString(question.asker_uuid)).getName() + " received an answer. (Help ID " + question.getEntryID() + ")");
 		}
+
 	}
 	
 }

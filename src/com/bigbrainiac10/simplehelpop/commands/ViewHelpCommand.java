@@ -18,7 +18,11 @@ import com.bigbrainiac10.simplehelpop.viewmenu.ViewType;
 
 public class ViewHelpCommand implements CommandExecutor {
 
-	private SimpleHelpOp plugin = SimpleHelpOp.getInstance();
+	private final SimpleHelpOp plugin;
+	
+	public ViewHelpCommand(SimpleHelpOp plugin) {
+		this.plugin = plugin;
+	}
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {

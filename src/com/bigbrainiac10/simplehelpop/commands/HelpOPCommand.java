@@ -18,14 +18,23 @@ import com.bigbrainiac10.simplehelpop.events.QuestionCreatedEvent;
 
 public class HelpOPCommand implements CommandExecutor {
 
-	private SimpleHelpOp plugin = SimpleHelpOp.getInstance();
+	private final SimpleHelpOp plugin;
 	private final String addedMsg = Utility.safeToColor(SHOConfigManager.getPlayerMessage("questionAdded"));
 	private final String failureMsg = Utility.safeToColor(SHOConfigManager.getPlayerMessage("questionFailure"));
 	
+	public HelpOPCommand(SimpleHelpOp plugin) {
+		this.plugin = plugin;
+	}
+	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+		
 		if(!(sender instanceof Player)) {
 			sender.sendMessage("If console needs help, we're all doomed");
+			return false;
+		}
+		
+		if (args.length < 1) {
 			return false;
 		}
 		

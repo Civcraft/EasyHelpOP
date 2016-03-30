@@ -6,20 +6,23 @@ description: Allow players to request help.
 commands:
   helpop:
     description: Send a message for help
-    alias: ho
+    aliases: ho
     permission: simplehelpop.requesthelp
-    usage: /helpop [MESSAGE]
+    usage: /<command> [MESSAGE]
   viewhelp:
     description: List and reply to questions in an interactive setting.
     permission: simplehelpop.replyhelp
-    usage: /viewhelp [all|id|name [ID|NAME]
+    usage: /<command> [all|id|name [ID|NAME]
 permissions:
-  simplehelpop.*:
-    description: Grant all simplehelpop permissions
-    simplehelpop.requesthelp: true
-    simplehelpop.replyhelp: true
   simplehelpop.requesthelp:
     description: Allow a player to request help
+    default: true
   simplehelpop.replyhelp:
     description: Allow a player to reply to a question
     default: op
+  simplehelpop.*:
+    description: Grant all simplehelpop permissions
+    default: op
+    children:
+      simplehelpop.replyhelp: true
+      simplehelpop.requesthelp: true

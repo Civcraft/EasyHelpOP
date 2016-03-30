@@ -84,7 +84,7 @@ public class ViewMenu{
 					lore);
 			
 			if (question.replier_uuid != null) {
-				item.addEnchantment(Enchantment.DURABILITY, 1);
+				item.addUnsafeEnchantment(Enchantment.DURABILITY, 1);
 			}
 			
 			Clickable clickItem = new Clickable(item){
@@ -98,7 +98,10 @@ public class ViewMenu{
 					}
 					
 					ConversationFactory cf = new ConversationFactory(plugin);
-					Conversation conv = cf.withFirstPrompt(new ReplyQuestionConversation(q, p)).withLocalEcho(true).withEscapeSequence("cancel").buildConversation(p);
+					Conversation conv = cf.withFirstPrompt(new ReplyQuestionConversation(q, p))
+								.withLocalEcho(true)
+								.withEscapeSequence("cancel")
+								.buildConversation(p);
 					conv.begin();
 					
 					ClickableInventory.forceCloseInventory(p);

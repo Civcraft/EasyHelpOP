@@ -4,8 +4,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -40,22 +40,22 @@ public class HelpOPData {
 				+ "ask_time timestamp NOT NULL,"
 				+ "asker_uuid varchar(36) NOT NULL,"
 				+ "question text NOT NULL,"
-				+ "reply_time timestamp,"
-				+ "replier_uuid varchar(36),"
-				+ "reply text,"
+				+ "reply_time timestamp NULL DEFAULT NULL,"
+				+ "replier_uuid varchar(36) DEFAULT NULL,"
+				+ "reply text DEFAULT NULL,"
 				+ "viewed bool NOT NULL,"
 				+ "PRIMARY KEY(help_id));");
 	}
 	
 	public HelpQuestion extractHelpQuestion(ResultSet results) throws SQLException {
-		int helpID = results.getInt("help_id");
-		Timestamp askTime = results.getTimestamp("ask_time");
-		String askerUUID = results.getString("asker_uuid");
-		String question = results.getString("question");
-		Timestamp replyTime = results.getTimestamp("reply_time");
-		String replier_uuid = results.getString("replier_uuid");
-		String reply = results.getString("reply");
-		boolean viewed = results.getBoolean("viewed");
+		int helpID = results.getInt(1);//"help_id");
+		Timestamp askTime = results.getTimestamp(2, Calendar.getInstance());//"ask_time");
+		String askerUUID = results.getString(3);//"asker_uuid");
+		String question = results.getString(4);//"question");
+		Timestamp replyTime = results.getTimestamp(5, Calendar.getInstance());//"reply_time");
+		String replier_uuid = results.getString(6);//"replier_uuid");
+		String reply = results.getString(7);//"reply");
+		boolean viewed = results.getBoolean(8);//"viewed");
 		
 		return new HelpQuestion(helpID, askTime, askerUUID, question, replyTime, replier_uuid, reply, viewed);
 	}
@@ -65,7 +65,7 @@ public class HelpOPData {
 			SimpleHelpOp.Log(Level.WARNING, "Unable to get unviewed questions for a null player");
 			return new ArrayList<HelpQuestion>();
 		}
-		PreparedStatement ps = db.prepareStatement("SELECT * FROM help_requests WHERE asker_uuid=? AND viewed=False;");
+		PreparedStatement ps = db.prepareStatement("SELECT help_id, ask_time, asker_uuid, question, reply_time, replier_uuid, reply, viewed FROM help_requests WHERE asker_uuid=? AND viewed=False;");
 		
 		ps.setString(1, player.getUniqueId().toString());
 		
@@ -84,7 +84,7 @@ public class HelpOPData {
 			SimpleHelpOp.Log(Level.WARNING, "Unable to get unanswered questions for a null player");
 			return new ArrayList<HelpQuestion>();
 		}
-		PreparedStatement ps = db.prepareStatement("SELECT * FROM help_requests WHERE asker_uuid=? AND reply IS NULL;");
+		PreparedStatement ps = db.prepareStatement("SELECT help_id, ask_time, asker_uuid, question, reply_time, replier_uuid, reply, viewed FROM help_requests WHERE asker_uuid=? AND reply IS NULL;");
 		
 		ps.setString(1, player.toString());
 		
@@ -93,19 +93,27 @@ public class HelpOPData {
 		List<HelpQuestion> unansweredQuestions = new ArrayList<HelpQuestion>();
 		
 		while(results.next()){
-			unansweredQuestions.add(extractHelpQuestion(results));
+			try {
+				unansweredQuestions.add(extractHelpQuestion(results));
+			} catch (SQLException sqe) {
+				plugin.getLogger().log(Level.WARNING, "Failure while extracting a help question:", sqe);
+			}
 		}
 		return unansweredQuestions;
 	}
 	
 	public List<HelpQuestion> getAllQuestions() throws SQLException{
-		PreparedStatement ps = db.prepareStatement("SELECT * FROM help_requests;");
+		PreparedStatement ps = db.prepareStatement("SELECT help_id, ask_time, asker_uuid, question, reply_time, replier_uuid, reply, viewed FROM help_requests;");
 		ResultSet results = ps.executeQuery();
 		
 		List<HelpQuestion> allQuestions = new ArrayList<HelpQuestion>();
 		
 		while(results.next()){
-			allQuestions.add(extractHelpQuestion(results));
+			try {
+				allQuestions.add(extractHelpQuestion(results));
+			} catch (SQLException sqe) {
+				plugin.getLogger().log(Level.WARNING, "Failure while extracting a help question:", sqe);
+			}
 		}
 		return allQuestions;
 	}
@@ -137,7 +145,7 @@ public class HelpOPData {
 			try {
 				questionList = getUnansweredQuestionsFromDB();
 			} catch (SQLException se) {
-				SimpleHelpOp.Log(Level.WARNING, "Unable to refresh question list from database", se);
+				plugin.getLogger().log(Level.WARNING, "Unable to refresh question list from database", se);
 				questionList = new ArrayList<>();
 			}
 		}
@@ -145,13 +153,19 @@ public class HelpOPData {
 	}
 	
 	private List<HelpQuestion> getUnansweredQuestionsFromDB() throws SQLException{
-		PreparedStatement ps = db.prepareStatement("SELECT * FROM help_requests WHERE reply IS NULL;");
-		ResultSet results = ps.executeQuery();
+		PreparedStatement ps = db.prepareStatement("SELECT help_id, ask_time, asker_uuid, question, reply_time, replier_uuid, reply, viewed FROM help_requests WHERE reply IS NULL;");
+		ps.execute();
+		
+		ResultSet results = ps.getResultSet();
 		
 		List<HelpQuestion> unansweredQuestions = new ArrayList<HelpQuestion>();
 		
 		while(results.next()){
-			unansweredQuestions.add(extractHelpQuestion(results));
+			try {
+				unansweredQuestions.add(extractHelpQuestion(results));
+			} catch (SQLException sqe) {
+				plugin.getLogger().log(Level.WARNING, "Failure while extracting a help question:", sqe);
+			}
 		}
 		return unansweredQuestions;
 	}
@@ -159,7 +173,7 @@ public class HelpOPData {
 	public HelpQuestion addQuestion(String askerUUID, String question) throws SQLException{
 		PreparedStatement ps = db.prepareStatement("INSERT INTO help_requests(ask_time, asker_uuid, question, viewed) VALUES(?,?,?,?);");
 
-		Timestamp time = Timestamp.from(Instant.now());
+		Timestamp time = new Timestamp(Calendar.getInstance().getTimeInMillis());
 		
 		ps.setTimestamp(1, time);
 		ps.setString(2, askerUUID);

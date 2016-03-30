@@ -78,8 +78,8 @@ public class SimpleHelpOp extends JavaPlugin{
 	}
 	
 	private void registerCommands(){
-		_instance.getCommand("helpop").setExecutor(new HelpOPCommand());
-		_instance.getCommand("viewhelp").setExecutor(new ViewHelpCommand());
+		_instance.getCommand("helpop").setExecutor(new HelpOPCommand(this));
+		_instance.getCommand("viewhelp").setExecutor(new ViewHelpCommand(this));
 	}
 	
 }
