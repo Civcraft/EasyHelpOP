@@ -48,14 +48,14 @@ public class HelpOPData {
 	}
 	
 	public HelpQuestion extractHelpQuestion(ResultSet results) throws SQLException {
-		int helpID = results.getInt(1);//"help_id");
-		Timestamp askTime = results.getTimestamp(2, Calendar.getInstance());//"ask_time");
-		String askerUUID = results.getString(3);//"asker_uuid");
-		String question = results.getString(4);//"question");
-		Timestamp replyTime = results.getTimestamp(5, Calendar.getInstance());//"reply_time");
-		String replier_uuid = results.getString(6);//"replier_uuid");
-		String reply = results.getString(7);//"reply");
-		boolean viewed = results.getBoolean(8);//"viewed");
+		int helpID = results.getInt(1);
+		Timestamp askTime = results.getTimestamp(2, Calendar.getInstance());
+		String askerUUID = results.getString(3);
+		String question = results.getString(4);
+		Timestamp replyTime = results.getTimestamp(5, Calendar.getInstance());
+		String replier_uuid = results.getString(6);
+		String reply = results.getString(7);
+		boolean viewed = results.getBoolean(8);
 		
 		return new HelpQuestion(helpID, askTime, askerUUID, question, replyTime, replier_uuid, reply, viewed);
 	}
@@ -65,7 +65,7 @@ public class HelpOPData {
 			SimpleHelpOp.Log(Level.WARNING, "Unable to get unviewed questions for a null player");
 			return new ArrayList<HelpQuestion>();
 		}
-		PreparedStatement ps = db.prepareStatement("SELECT help_id, ask_time, asker_uuid, question, reply_time, replier_uuid, reply, viewed FROM help_requests WHERE asker_uuid=? AND viewed=False;");
+		PreparedStatement ps = db.prepareStatement("SELECT help_id, ask_time, asker_uuid, question, reply_time, replier_uuid, reply, viewed FROM help_requests WHERE asker_uuid=? AND reply IS NOT NULL AND viewed=False;");
 		
 		ps.setString(1, player.getUniqueId().toString());
 		
@@ -118,7 +118,7 @@ public class HelpOPData {
 		return allQuestions;
 	}
 	
-	public void removeUnansweredQuestion(HelpQuestion question){
+	public void removeAnsweredQuestion(HelpQuestion question){
 		for(HelpQuestion q : questionList){
 			if(q.getEntryID() == question.getEntryID()){
 				questionList.remove(q);

@@ -13,7 +13,6 @@ import com.bigbrainiac10.simplehelpop.HelpQuestion;
 import com.bigbrainiac10.simplehelpop.SHOConfigManager;
 import com.bigbrainiac10.simplehelpop.SimpleHelpOp;
 import com.bigbrainiac10.simplehelpop.Utility;
-import com.bigbrainiac10.simplehelpop.database.HelpOPData;
 import com.bigbrainiac10.simplehelpop.events.QuestionCreatedEvent;
 
 public class HelpOPCommand implements CommandExecutor {
@@ -28,7 +27,6 @@ public class HelpOPCommand implements CommandExecutor {
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-		
 		if(!(sender instanceof Player)) {
 			sender.sendMessage("If console needs help, we're all doomed");
 			return false;

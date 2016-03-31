@@ -2,6 +2,7 @@ package com.bigbrainiac10.simplehelpop.listeners;
 
 import java.sql.SQLException;
 import java.util.UUID;
+import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -21,6 +22,7 @@ public class QuestionListener implements Listener {
 	private SimpleHelpOp plugin = SimpleHelpOp.getInstance();
 	
 	private final String alertMsg = Utility.safeToColor(SHOConfigManager.getPlayerMessage("helperAlert"));
+	private final String replyMsg = Utility.safeToColor(SHOConfigManager.getPlayerMessage("replyReceived"));
 	
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void questionCreated(QuestionCreatedEvent event){
@@ -48,19 +50,18 @@ public class QuestionListener implements Listener {
 		}
 		Player a = Bukkit.getPlayer(UUID.fromString(question.asker_uuid));
 		if (a != null) {
-			if (p != null) {
-				a.sendMessage(p.getName() + " answered your question!");
-			} else {
-				a.sendMessage("A helper answered your question!");
-			}
-			a.sendMessage("You asked: " + question.getQuestion() + "\nThey replied: "+ question.reply);
+			a.sendMessage( replyMsg
+					.replace("%HELPER%", p != null ? p.getName() : "A helper")
+					.replace("%QUESTION%", question.getQuestion())
+					.replace("%ANSWER%", question.reply));
 			
 			question.setViewed(true);
 			
 			try {
 				plugin.getHelpOPData().updateQuestion(question);
+				plugin.getHelpOPData().removeAnsweredQuestion(question);
 			} catch (SQLException e) {
-				e.printStackTrace();
+				plugin.getLogger().log(Level.SEVERE, "Failed to update question.", e);
 			}
 			SimpleHelpOp.Log("Player " + Bukkit.getOfflinePlayer(UUID.fromString(question.asker_uuid)).getName() + " received an answer and has seen it. (Help ID " + question.getEntryID() + ")");
 		} else {

@@ -101,6 +101,7 @@ public class ViewMenu{
 					Conversation conv = cf.withFirstPrompt(new ReplyQuestionConversation(q, p))
 								.withLocalEcho(true)
 								.withEscapeSequence("cancel")
+								.withModality(false)
 								.buildConversation(p);
 					conv.begin();
 					
@@ -109,11 +110,11 @@ public class ViewMenu{
 			};
 			
 			menu.addSlot(clickItem);
-			
 		}
 		
 		ItemStack backItem = createItem(Material.ARROW, "Back Page", null);
 		ItemStack forwardItem = createItem(Material.ARROW, "Forward Page", null);
+		ItemStack closeItem = createItem(Material.BARRIER, "Close", null);
 		
 		Clickable backClick = new Clickable(backItem){
 			@Override
@@ -131,12 +132,18 @@ public class ViewMenu{
 			}
 		};
 		
+		Clickable closeClick = new Clickable(closeItem) {
+			@Override
+			public void clicked(Player p) {
+				ClickableInventory.forceCloseInventory(player);
+			}
+		};
+		
 		menu.setSlot(backClick, 45);
+		menu.setSlot(closeClick, 49);
 		menu.setSlot(forwardClick, 53);
 		
 		ScheduledInventoryOpen.schedule(plugin, menu, player);
-		
-		
 	}
 	
 	private ItemStack createItem(Material material, String title, List<String> lore){

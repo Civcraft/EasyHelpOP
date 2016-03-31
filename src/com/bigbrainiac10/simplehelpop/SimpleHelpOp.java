@@ -47,7 +47,7 @@ public class SimpleHelpOp extends JavaPlugin{
 	}
 
 	public static void Log(Level level, String message, Object...vars){
-		_logger.log(level, "[SimpleHelpOp] " + message, vars);
+		_logger.log(level, message, vars);
 	}
 
 	public Database getDB(){
