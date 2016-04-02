@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -12,40 +13,75 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import com.bigbrainiac10.simplehelpop.HelpQuestion;
+import com.bigbrainiac10.simplehelpop.SHOConfigManager;
 import com.bigbrainiac10.simplehelpop.SimpleHelpOp;
+import com.bigbrainiac10.simplehelpop.Utility;
 import com.bigbrainiac10.simplehelpop.database.HelpOPData;
 
 public class PlayerListener implements Listener {
 	
 	private SimpleHelpOp plugin = SimpleHelpOp.getInstance();
 	private HelpOPData helpData = plugin.getHelpOPData();
+	private final String unansweredReady = Utility.safeToColor(SHOConfigManager.getPlayerMessage("unansweredReady"));
+	private final String replyMsg = Utility.safeToColor(SHOConfigManager.getPlayerMessage("replyReceived"));
 	
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void playerJoin(PlayerJoinEvent event){
 		Player player = event.getPlayer();
 		
-		List<HelpQuestion> q = new ArrayList<HelpQuestion>();
+		List<HelpQuestion> qq = new ArrayList<HelpQuestion>();
 		try {
-			q = helpData.getUnviewedQuestions(player);
+			qq = helpData.getUnviewedQuestions(player);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			plugin.getLogger().log(Level.SEVERE, "Failed to retrieve questions for joining player", e);
+		}
+
+		final UUID p = player.getUniqueId();
+		
+		if (qq != null && qq.size() > 0) {
+			final List<HelpQuestion> q = qq;
+			
+			new BukkitRunnable() {
+				@Override
+				public void run() {
+					Player player = Bukkit.getPlayer(p);
+					if (player == null) return;
+					for(HelpQuestion question : q){
+						OfflinePlayer p = Bukkit.getOfflinePlayer(UUID.fromString(question.replier_uuid));
+						
+						player.sendMessage( replyMsg
+								.replace("%HELPER%", p != null ? p.getName() : "A helper")
+								.replace("%QUESTION%", question.getQuestion())
+								.replace("%ANSWER%", question.reply));
+						
+						question.setViewed(true);
+						
+						try {
+							helpData.updateQuestion(question);
+							helpData.removeAnsweredQuestion(question);
+						} catch (SQLException e) {
+							plugin.getLogger().log(Level.SEVERE, "Failed to update question.", e);
+						}
+					}
+				}
+			}.runTaskLater(plugin, 20l);
 		}
 		
-		for(HelpQuestion question : q){
-			OfflinePlayer p = Bukkit.getOfflinePlayer(UUID.fromString(question.replier_uuid));
-			
-			player.sendMessage(p.getName() + " answered your question!");
-			player.sendMessage("You asked: " + question.getQuestion());
-			player.sendMessage("They replied: "+question.reply);
-			
-			question.setViewed(true);
-			
-			try {
-				helpData.updateQuestion(question);
-			} catch (SQLException e) {
-				e.printStackTrace();
+		if (player.hasPermission("simplehelpop.replyhelp")){
+			List<?> u = helpData.getUnansweredQuestions();
+			if (u != null && u.size() > 0) {
+				new BukkitRunnable() {
+
+					@Override
+					public void run() {
+						Player player = Bukkit.getPlayer(p);
+						if (player == null) return;
+						player.sendMessage(unansweredReady);
+					}
+				}.runTaskLater(plugin, 40l);
 			}
 		}
 	}

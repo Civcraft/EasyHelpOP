@@ -47,7 +47,7 @@ public class SimpleHelpOp extends JavaPlugin{
 	}
 
 	public static void Log(Level level, String message, Object...vars){
-		_logger.log(level, "[SimpleHelpOp] " + message, vars);
+		_logger.log(level, message, vars);
 	}
 
 	public Database getDB(){
@@ -62,7 +62,6 @@ public class SimpleHelpOp extends JavaPlugin{
 		return _helpData;
 	}
 	
-	// TODO: Refactor into handler.
 	private void initializeDatabase(){
 		String host = SHOConfigManager.getHostName();
 		String user = SHOConfigManager.getUserName();
@@ -79,8 +78,8 @@ public class SimpleHelpOp extends JavaPlugin{
 	}
 	
 	private void registerCommands(){
-		_instance.getCommand("helpop").setExecutor(new HelpOPCommand());
-		_instance.getCommand("viewhelp").setExecutor(new ViewHelpCommand());
+		_instance.getCommand("helpop").setExecutor(new HelpOPCommand(this));
+		_instance.getCommand("viewhelp").setExecutor(new ViewHelpCommand(this));
 	}
 	
 }
