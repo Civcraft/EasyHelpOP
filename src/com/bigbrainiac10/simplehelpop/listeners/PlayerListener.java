@@ -47,7 +47,7 @@ public class PlayerListener implements Listener {
 		}
 
 		if (player.hasPermission("simplehelpop.replyhelp")) {
-			List<?> u = SimpleHelpOp.getHelpOPData().getUnansweredQuestionsFromDB();
+			List<HelpQuestion> u = SimpleHelpOp.getHelpOPData().getUnansweredQuestionsFromDB();
 			if (u != null && u.size() > 0) {
 				new BukkitRunnable() {
 

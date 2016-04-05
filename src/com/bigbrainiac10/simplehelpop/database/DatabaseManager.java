@@ -4,11 +4,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -48,7 +45,9 @@ public class DatabaseManager {
 		UUID askerUUID = UUID.fromString(results.getString(3));
 		String question = results.getString(4);
 		Timestamp replyTime = results.getTimestamp(5, Calendar.getInstance());
-		UUID replier_uuid = UUID.fromString(results.getString(6));
+		String replierUUIDString = (results.getString(6));
+		UUID replier_uuid = replierUUIDString == null ? null : UUID
+				.fromString(results.getString(6));
 		String reply = results.getString(7);
 		boolean viewed = results.getBoolean(8);
 
@@ -249,5 +248,30 @@ public class DatabaseManager {
 			}
 		}
 		return rowsAffected > 0;
+	}
+
+	public HelpQuestion getUnansweredByID(int id) {
+		PreparedStatement ps = db
+				.prepareStatement("select * from help_requests where help_id=?;");
+		HelpQuestion hq = null;
+		try {
+			ps.setInt(1, id);
+			ResultSet res = ps.executeQuery();
+			if (res.next()) {
+				hq = extractHelpQuestion(res);
+			}
+		} catch (SQLException e) {
+			SimpleHelpOp
+					.Log(Level.SEVERE, "Error while getting question " + id);
+			e.printStackTrace();
+			return null;
+		} finally {
+			try {
+				ps.close();
+			} catch (Exception ex) {
+
+			}
+		}
+		return hq;
 	}
 }

@@ -30,10 +30,6 @@ public class SHOConfigManager {
 		return config.getString("db.dbname");
 	}
 	
-	public static String getPlayerMessage(String configName){
-		return config.getString("msg."+configName);
-	}
-	
 	public static boolean getDebug(){
 		return config.getBoolean("debug");
 	}

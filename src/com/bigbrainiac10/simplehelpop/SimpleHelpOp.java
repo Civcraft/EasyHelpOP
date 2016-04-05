@@ -8,8 +8,10 @@ import org.bukkit.Bukkit;
 import vg.civcraft.mc.civmodcore.ACivMod;
 import vg.civcraft.mc.mercury.MercuryAPI;
 
+import com.bigbrainiac10.simplehelpop.commands.SimpleHelpCommandManager;
 import com.bigbrainiac10.simplehelpop.database.Database;
 import com.bigbrainiac10.simplehelpop.database.DatabaseManager;
+import com.bigbrainiac10.simplehelpop.listeners.MercuryListener;
 import com.bigbrainiac10.simplehelpop.listeners.PlayerListener;
 import com.bigbrainiac10.simplehelpop.listeners.QuestionListener;
 
@@ -23,6 +25,9 @@ public class SimpleHelpOp extends ACivMod{
 	private static boolean mercuryEnabled = false;
 	
 	public void onEnable(){
+		handle = new SimpleHelpCommandManager();
+		handle.registerCommands();
+		super.onEnable();
 		instance = this;
 		logger = this.getLogger();
 		
@@ -32,6 +37,7 @@ public class SimpleHelpOp extends ACivMod{
 		if (Bukkit.getPluginManager().isPluginEnabled("Mercury")) {
 			mercuryEnabled = true;
 			MercuryAPI.registerPluginMessageChannel("SimpleHelpOp");
+			Bukkit.getPluginManager().registerEvents(new MercuryListener(), this);
 		}
 		
 		saveDefaultConfig();

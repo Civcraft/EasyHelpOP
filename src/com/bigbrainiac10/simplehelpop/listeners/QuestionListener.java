@@ -40,7 +40,7 @@ public class QuestionListener implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void questionAnswered(QuestionAnsweredEvent event) {
 		HelpQuestion question = event.getQuestion();
-		Player p = Bukkit.getPlayer(question.getReplierUUID());
+		Player p = Bukkit.getPlayer(question.getAskedUUID());
 		if (p != null) {
 			p.sendMessage(ChatColor.GOLD + "You asked: " + ChatColor.GRAY
 					+ question.getQuestion());

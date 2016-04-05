@@ -14,7 +14,7 @@ public class ViewHelpCommand extends PlayerCommand {
 
 	public ViewHelpCommand(String name) {
 		super(name);
-		setIdentifier("helpop");
+		setIdentifier("viewhelp");
 		setDescription("Opens UI to answer player questions");
 		setUsage("/viewhelp");
 		setArguments(0, 0);
