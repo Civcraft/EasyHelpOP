@@ -1,66 +1,69 @@
 package com.bigbrainiac10.simplehelpop.commands;
 
-import java.sql.SQLException;
-import java.util.logging.Level;
+import java.util.List;
 
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import vg.civcraft.mc.civmodcore.command.PlayerCommand;
+
 import com.bigbrainiac10.simplehelpop.HelpQuestion;
-import com.bigbrainiac10.simplehelpop.SHOConfigManager;
 import com.bigbrainiac10.simplehelpop.SimpleHelpOp;
-import com.bigbrainiac10.simplehelpop.Utility;
 import com.bigbrainiac10.simplehelpop.events.QuestionCreatedEvent;
 
-public class HelpOPCommand implements CommandExecutor {
+public class HelpOPCommand extends PlayerCommand {
 
-	private final SimpleHelpOp plugin;
-	private final String addedMsg = Utility.safeToColor(SHOConfigManager.getPlayerMessage("questionAdded"));
-	private final String failureMsg = Utility.safeToColor(SHOConfigManager.getPlayerMessage("questionFailure"));
-	
-	public HelpOPCommand(SimpleHelpOp plugin) {
-		this.plugin = plugin;
+	public HelpOPCommand(String name) {
+		super(name);
+		setIdentifier("helpop");
+		setDescription("Asks a server operator for help");
+		setUsage("/helpop <message>");
+		setArguments(0, 100);
 	}
-	
+
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-		if(!(sender instanceof Player)) {
+	public boolean execute(CommandSender sender, String[] args) {
+		if (!(sender instanceof Player)) {
 			sender.sendMessage("If console needs help, we're all doomed");
 			return false;
 		}
-		
+
 		if (args.length < 1) {
-			return false;
+			sender.sendMessage(ChatColor.RED + "You have to enter a message");
+			return true;
 		}
-		
-		Player player = (Player)sender;
-		
+
+		Player player = (Player) sender;
+
 		StringBuilder sb = new StringBuilder();
-		
-		for (String arg : args){
+
+		for (String arg : args) {
 			sb.append(arg).append(" ");
 		}
-		 
+
 		String message = sb.toString().trim();
-		
+
 		HelpQuestion hq = null;
-		
-		try {
-			hq = plugin.getHelpOPData().addQuestion(player.getUniqueId().toString(), message);
+
+		hq = SimpleHelpOp.getHelpOPData().addQuestion(
+				player.getUniqueId(), message);
+		if (hq != null) {
 			QuestionCreatedEvent qe = new QuestionCreatedEvent(hq);
 			Bukkit.getServer().getPluginManager().callEvent(qe);
-		} catch (SQLException e) {
-			player.sendMessage(failureMsg);
-			plugin.getLogger().log(Level.SEVERE, "Failed to add question.", e);
-			return false;
+		} else {
+			player.sendMessage(ChatColor.RED
+					+ "Failed to send question, please try again later");
 		}
-		
-		player.sendMessage(addedMsg);
-		
+
+		player.sendMessage(ChatColor.GREEN + "Your question was sent!");
+
 		return true;
+	}
+	
+	public List<String> tabComplete(CommandSender sender, String[] args) {
+		return null;
 	}
 
 }

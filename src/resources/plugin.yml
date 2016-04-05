@@ -2,17 +2,15 @@ name: ${project.name}
 main: com.bigbrainiac10.simplehelpop.SimpleHelpOp
 version: ${project.version}
 author: bigbrainiac10
+authors: [Maxopoly]
+depend: [CivModCore]
+softdepend: [NameLayer]
 description: Allow players to request help.
 commands:
   helpop:
-    description: Send a message for help
-    aliases: ho
     permission: simplehelpop.requesthelp
-    usage: /<command> [MESSAGE]
   viewhelp:
-    description: List and reply to questions in an interactive setting.
     permission: simplehelpop.replyhelp
-    usage: /<command> [all|id|name [ID|NAME]
 permissions:
   simplehelpop.requesthelp:
     description: Allow a player to request help

@@ -1,13 +1,10 @@
 package com.bigbrainiac10.simplehelpop.events;
 
-import org.bukkit.event.Event;
-import org.bukkit.event.HandlerList;
+import vg.civcraft.mc.civmodcore.interfaces.CustomEvent;
 
 import com.bigbrainiac10.simplehelpop.HelpQuestion;
 
-public class QuestionCreatedEvent extends Event{
-
-	private static final HandlerList handlers = new HandlerList();
+public class QuestionCreatedEvent extends CustomEvent{
 	
 	private HelpQuestion question;
 	
@@ -18,13 +15,4 @@ public class QuestionCreatedEvent extends Event{
 	public HelpQuestion getQuestion(){
 		return question;
 	}
-	
-	public HandlerList getHandlers(){
-		return handlers;
-	}
-	
-	public static HandlerList getHandlerList(){
-		return handlers;
-	}
-
 }

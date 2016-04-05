@@ -11,159 +11,176 @@ import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationFactory;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventory;
 import vg.civcraft.mc.civmodcore.inventorygui.ScheduledInventoryOpen;
+import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
+import vg.civcraft.mc.namelayer.NameAPI;
 
 import com.bigbrainiac10.simplehelpop.HelpQuestion;
 import com.bigbrainiac10.simplehelpop.SimpleHelpOp;
-import com.bigbrainiac10.simplehelpop.Utility;
 
-public class ViewMenu{
+public class ViewMenu {
 
-	private final SimpleHelpOp plugin = SimpleHelpOp.getInstance();
-	
 	private List<HelpQuestion> questions;
-	
 	private int pageNum = 1;
 	private int pageNumMax;
-	
+
 	private String title;
-	
+
 	private Player player;
-	
-	private ViewType viewType;
-	
-	public ViewMenu(List<HelpQuestion> questions, String title, Player player, ViewType viewType){
+
+	public ViewMenu(List<HelpQuestion> questions, String title, Player player) {
 		this.questions = questions;
-		
-		double roundedPages = Math.ceil((float)this.questions.size()/45);
-		this.pageNumMax = ((int)roundedPages > 0) ? (int)roundedPages : 1;
-		
+
+		double roundedPages = Math.ceil((float) this.questions.size() / 45);
+		this.pageNumMax = ((int) roundedPages > 0) ? (int) roundedPages : 1;
+
 		this.title = title;
-		
+
 		this.player = player;
-		
-		this.viewType = viewType;
-	
+
 		openMenu();
 	}
-	
-	public void openMenu(){
+
+	public void openMenu() {
 		ClickableInventory.forceCloseInventory(player);
-		
-		ClickableInventory menu = new ClickableInventory(54, title+" - Page #"+pageNum);
-		
-		for(int i=(pageNum*45)-45; i<pageNum*45; i++){
-			if(i > questions.size()-1)
-				break;
-			
+
+		ClickableInventory menu = new ClickableInventory(54, title
+				+ " - Page #" + pageNum);
+
+		for (int i = (pageNum * 45) - 45; (i < pageNum * 45)
+				&& (i < questions.size()); i++) {
+
 			HelpQuestion question = questions.get(i);
-			
-			List<String> lore = new ArrayList<String>();
-			
-			lore.add("Sent in by: "+Bukkit.getServer().getOfflinePlayer(UUID.fromString(question.asker_uuid)).getName());
-			lore.add(ChatColor.GRAY + "Question:");
-			
-			for(String str : Utility.loreWrap(question.getQuestion()).split("\n")){
-				lore.add(ChatColor.GRAY + "" + ChatColor.ITALIC + str);
+			ItemStack is = new ItemStack(Material.EYE_OF_ENDER);
+			ISUtils.setName(is, ChatColor.YELLOW + "Ticket " + question.getEntryID());
+			String name;
+			if (SimpleHelpOp.isNameLayerEnabled()) {
+				name = NameAPI.getCurrentName(question.getAskedUUID());
+			} else {
+				name = Bukkit.getServer()
+						.getOfflinePlayer(question.getAskedUUID()).getName();
 			}
-			
-			if(!(question.replier_uuid == null)){
-				lore.add(ChatColor.GRAY + "" + ChatColor.BOLD + "Reply:");
-				for(String str : Utility.loreWrap(question.reply).split("\n")){
-					lore.add(ChatColor.GRAY + "" + ChatColor.ITALIC + "" + ChatColor.BOLD + str);
+			ISUtils.addLore(is, ChatColor.GOLD + "Sent in by: " + name);
+			ISUtils.addLore(is, ChatColor.GRAY + "Question:");
+
+			for (String str : loreWrap(question.getQuestion()).split(
+					"\n")) {
+				ISUtils.addLore(is, ChatColor.GRAY + "" + ChatColor.ITALIC + str);
+			}
+
+			if (question.getReplierUUID() != null) {
+				//question was already answered
+				ISUtils.addLore(is, ChatColor.GRAY + "" + ChatColor.BOLD + "Reply:");
+				for (String str : loreWrap(question.getReply()).split("\n")) {
+					ISUtils.addLore(is, ChatColor.GRAY + "" + ChatColor.ITALIC + ""
+							+ ChatColor.BOLD + str);
 				}
 			}
-			
-			ItemStack item = createItem(Material.BOOK, 
-					"Question ID: "+question.getEntryID(),
-					lore);
-			
-			if (question.replier_uuid != null) {
-				item.addUnsafeEnchantment(Enchantment.DURABILITY, 1);
+			else {
+				//question is unanswered, so we add an enchant to mark that
+				ItemMeta im = is.getItemMeta();
+				im.addEnchant(Enchantment.DURABILITY, 1, true);
+				im.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+				is.setItemMeta(im);
 			}
 			
-			Clickable clickItem = new Clickable(item){
+			Clickable clickItem = new Clickable(is) {
 				@Override
 				public void clicked(Player p) {
-					int id = Integer.parseInt(this.getItemStack().getItemMeta().getDisplayName().split(" ")[2]);
-					HelpQuestion q = plugin.getHelpOPData().getUnansweredByID(id);
-					
-					if (q.replier_uuid != null) {
+					int id = Integer.parseInt(this.getItemStack().getItemMeta()
+							.getDisplayName().split(" ")[1]);
+					HelpQuestion q = SimpleHelpOp.getHelpOPData().getUnansweredByID(
+							id);
+					if (q.getReplierUUID() != null) {
+						p.sendMessage(ChatColor.RED + "This question was already answered");
 						return;
 					}
-					
-					ConversationFactory cf = new ConversationFactory(plugin);
-					Conversation conv = cf.withFirstPrompt(new ReplyQuestionConversation(q, p))
-								.withLocalEcho(true)
-								.withEscapeSequence("cancel")
-								.withModality(false)
-								.buildConversation(p);
+
+					ConversationFactory cf = new ConversationFactory(SimpleHelpOp.getInstance());
+					Conversation conv = cf
+							.withFirstPrompt(
+									new ReplyQuestionConversation(q, p))
+							.withLocalEcho(true).withEscapeSequence("cancel")
+							.withModality(false).buildConversation(p);
 					conv.begin();
-					
+
 					ClickableInventory.forceCloseInventory(p);
 				}
 			};
-			
+
 			menu.addSlot(clickItem);
 		}
-		
-		ItemStack backItem = createItem(Material.ARROW, "Back Page", null);
-		ItemStack forwardItem = createItem(Material.ARROW, "Forward Page", null);
-		ItemStack closeItem = createItem(Material.BARRIER, "Close", null);
-		
-		Clickable backClick = new Clickable(backItem){
+
+		ItemStack backItem = new ItemStack(Material.ARROW);
+		ISUtils.setLore(backItem, ChatColor.AQUA + "Back Page");
+		ItemStack forwardItem = new ItemStack(Material.ARROW);
+		ISUtils.setLore(forwardItem, ChatColor.AQUA + "Forward Page");
+		ItemStack closeItem = new ItemStack(Material.BARRIER);
+		ISUtils.setLore(closeItem, ChatColor.RED + "Close");
+
+		Clickable backClick = new Clickable(backItem) {
 			@Override
-			public void clicked(Player p){
-				setPageNum(pageNum-1);
+			public void clicked(Player p) {
+				setPageNum(pageNum - 1);
 				openMenu();
 			}
 		};
-		
-		Clickable forwardClick = new Clickable(forwardItem){
+
+		Clickable forwardClick = new Clickable(forwardItem) {
 			@Override
-			public void clicked(Player p){
-				setPageNum(pageNum+1);
+			public void clicked(Player p) {
+				setPageNum(pageNum + 1);
 				openMenu();
 			}
 		};
-		
+
 		Clickable closeClick = new Clickable(closeItem) {
 			@Override
 			public void clicked(Player p) {
 				ClickableInventory.forceCloseInventory(player);
 			}
 		};
-		
+
 		menu.setSlot(backClick, 45);
 		menu.setSlot(closeClick, 49);
 		menu.setSlot(forwardClick, 53);
-		
-		ScheduledInventoryOpen.schedule(plugin, menu, player);
+
+		ScheduledInventoryOpen.schedule(SimpleHelpOp.getInstance(), menu, player);
 	}
-	
-	private ItemStack createItem(Material material, String title, List<String> lore){
-		ItemStack item = new ItemStack(material);
-		
-		ItemMeta meta = item.getItemMeta();
-		meta.setDisplayName(title);
-		
-		if(lore != null)
-			meta.setLore(lore);
-			
-		item.setItemMeta(meta);
-		
-		return item;
-	}
-	
-	public void setPageNum(int num){
+
+	private void setPageNum(int num) {
 		pageNum = Math.max(1, Math.min(pageNumMax, num));
 		SimpleHelpOp.Log("Page Number: {0}", pageNum);
 		SimpleHelpOp.Log("Max Page Number: {0}", pageNumMax);
-		
+
 	}
+
+	private static String loreWrap(String str) {
+		if (str.length() < 20) {
+			return str;
+		}
+		String[] wordList = str.split(" ");
+
+		int nextCheck = 20;
+
+		StringBuilder sb = new StringBuilder();
+		for (String word : wordList) {
+			if (sb.length() > nextCheck) {
+				sb.append("\n");
+				nextCheck += 20;
+			}
+
+			sb.append(word).append(" ");
+		}
+
+		String wrappedString = sb.toString().trim();
+
+		return wrappedString;
 	}
+}

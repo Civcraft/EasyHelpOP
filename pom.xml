@@ -7,7 +7,7 @@
 	<packaging>jar</packaging>
 	<version>1.0.1</version>
 	<name>SimpleHelpOP</name>
-	<url>https://github.com/DevotedMC/SimpleHelpOP</url>
+	<url>https://github.com/Civcraft/SimpleHelpOP</url>
 
 	<build>
 		<pluginManagement>
@@ -58,6 +58,12 @@
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot-api</artifactId>
 			<version>1.8.8-R0.1-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>vg.civcraft.mc.namelayer</groupId>
+			<artifactId>NameLayer</artifactId>
+			<version>2.5.57</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>

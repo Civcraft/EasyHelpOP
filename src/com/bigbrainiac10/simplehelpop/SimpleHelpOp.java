@@ -3,39 +3,48 @@ package com.bigbrainiac10.simplehelpop;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.Bukkit;
 
-import com.bigbrainiac10.simplehelpop.commands.HelpOPCommand;
-import com.bigbrainiac10.simplehelpop.commands.ViewHelpCommand;
+import vg.civcraft.mc.civmodcore.ACivMod;
+
 import com.bigbrainiac10.simplehelpop.database.Database;
-import com.bigbrainiac10.simplehelpop.database.HelpOPData;
+import com.bigbrainiac10.simplehelpop.database.DatabaseManager;
 import com.bigbrainiac10.simplehelpop.listeners.PlayerListener;
 import com.bigbrainiac10.simplehelpop.listeners.QuestionListener;
 
-public class SimpleHelpOp extends JavaPlugin{
+public class SimpleHelpOp extends ACivMod{
 
-	private static Database _db;
-	private static SimpleHelpOp _instance;
-	private static Logger _logger;
-	private static HelpOPData _helpData;
+	private static Database db;
+	private static SimpleHelpOp instance;
+	private static Logger logger;
+	private static DatabaseManager dbm;
+	private static boolean nameLayerEnabled = false;
 	
 	public void onEnable(){
-		_instance = this;
-		_logger = this.getLogger();
+		instance = this;
+		logger = this.getLogger();
+		
+		if (Bukkit.getPluginManager().isPluginEnabled("NameLayer")) {
+			nameLayerEnabled = true;
+		}
 		
 		saveDefaultConfig();
 		reloadConfig();
 		new SHOConfigManager(getConfig());
 		
 		initializeDatabase();
-		_helpData = new HelpOPData(_db);
+		dbm = new DatabaseManager(db);
 		
 		registerListeners();
 		registerCommands();
 	}
 	
 	public void onDisable(){
-		_db.close();
+		db.close();
+	}
+	
+	public String getPluginName() {
+		return "SimpleHelpOp";
 	}
 	
 	public static void Log(String message){
@@ -47,19 +56,23 @@ public class SimpleHelpOp extends JavaPlugin{
 	}
 
 	public static void Log(Level level, String message, Object...vars){
-		_logger.log(level, message, vars);
+		logger.log(level, message, vars);
 	}
 
-	public Database getDB(){
-		return _db;
+	public static Database getDB(){
+		return db;
 	}
 	
 	public static SimpleHelpOp getInstance(){
-		return _instance;
+		return instance;
 	}
 	
-	public HelpOPData getHelpOPData(){
-		return _helpData;
+	public static DatabaseManager getHelpOPData(){
+		return dbm;
+	}
+	
+	public static boolean isNameLayerEnabled() {
+		return nameLayerEnabled;
 	}
 	
 	private void initializeDatabase(){
@@ -69,17 +82,11 @@ public class SimpleHelpOp extends JavaPlugin{
 		int port = SHOConfigManager.getPort();
 		String dbName = SHOConfigManager.getDBName();
 		
-		_db = new Database(host, port, dbName, user, password, getLogger());
+		db = new Database(host, port, dbName, user, password, getLogger());
 	}
 	
 	private void registerListeners(){
-		_instance.getServer().getPluginManager().registerEvents(new QuestionListener(), _instance);
-		_instance.getServer().getPluginManager().registerEvents(new PlayerListener(), _instance);
-	}
-	
-	private void registerCommands(){
-		_instance.getCommand("helpop").setExecutor(new HelpOPCommand(this));
-		_instance.getCommand("viewhelp").setExecutor(new ViewHelpCommand(this));
-	}
-	
+		Bukkit.getPluginManager().registerEvents(new QuestionListener(), this);
+		Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
+	}	
 }
