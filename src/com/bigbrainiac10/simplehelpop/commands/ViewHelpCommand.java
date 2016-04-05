@@ -28,7 +28,7 @@ public class ViewHelpCommand extends PlayerCommand {
 		}
 
 		Player player = (Player) sender;
-		ViewMenu vm = new ViewMenu(SimpleHelpOp.getHelpOPData().getUnansweredQuestions(),
+		ViewMenu vm = new ViewMenu(SimpleHelpOp.getHelpOPData().getUnansweredQuestionsFromDB(),
 				"Question Viewer", player);
 		vm.openMenu();
 		return true;

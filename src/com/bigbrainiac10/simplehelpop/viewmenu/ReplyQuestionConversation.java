@@ -11,6 +11,7 @@ import org.bukkit.conversations.Prompt;
 import org.bukkit.conversations.StringPrompt;
 import org.bukkit.entity.Player;
 
+import vg.civcraft.mc.mercury.MercuryAPI;
 import vg.civcraft.mc.namelayer.NameAPI;
 
 import com.bigbrainiac10.simplehelpop.HelpQuestion;
@@ -37,6 +38,9 @@ public class ReplyQuestionConversation extends StringPrompt {
 		SimpleHelpOp.getHelpOPData().updateQuestion(question);
 		QuestionAnsweredEvent qe = new QuestionAnsweredEvent(question);
 		Bukkit.getServer().getPluginManager().callEvent(qe);
+		if (SimpleHelpOp.isMercuryEnabled()) {
+			MercuryAPI.sendGlobalMessage("answer|" + question.getAskedUUID(), "SimpleHelpOp");
+		}
 		con.getForWhom()
 				.sendRawMessage(ChatColor.GREEN + "Your reply was sent");
 

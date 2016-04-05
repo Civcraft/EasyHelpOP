@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 
 import vg.civcraft.mc.civmodcore.ACivMod;
+import vg.civcraft.mc.mercury.MercuryAPI;
 
 import com.bigbrainiac10.simplehelpop.database.Database;
 import com.bigbrainiac10.simplehelpop.database.DatabaseManager;
@@ -19,6 +20,7 @@ public class SimpleHelpOp extends ACivMod{
 	private static Logger logger;
 	private static DatabaseManager dbm;
 	private static boolean nameLayerEnabled = false;
+	private static boolean mercuryEnabled = false;
 	
 	public void onEnable(){
 		instance = this;
@@ -26,6 +28,10 @@ public class SimpleHelpOp extends ACivMod{
 		
 		if (Bukkit.getPluginManager().isPluginEnabled("NameLayer")) {
 			nameLayerEnabled = true;
+		}
+		if (Bukkit.getPluginManager().isPluginEnabled("Mercury")) {
+			mercuryEnabled = true;
+			MercuryAPI.registerPluginMessageChannel("SimpleHelpOp");
 		}
 		
 		saveDefaultConfig();
@@ -73,6 +79,10 @@ public class SimpleHelpOp extends ACivMod{
 	
 	public static boolean isNameLayerEnabled() {
 		return nameLayerEnabled;
+	}
+	
+	public static boolean isMercuryEnabled() {
+		return mercuryEnabled;
 	}
 	
 	private void initializeDatabase(){

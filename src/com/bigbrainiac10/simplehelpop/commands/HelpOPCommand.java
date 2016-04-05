@@ -8,6 +8,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import vg.civcraft.mc.civmodcore.command.PlayerCommand;
+import vg.civcraft.mc.mercury.MercuryAPI;
 
 import com.bigbrainiac10.simplehelpop.HelpQuestion;
 import com.bigbrainiac10.simplehelpop.SimpleHelpOp;
@@ -52,11 +53,13 @@ public class HelpOPCommand extends PlayerCommand {
 		if (hq != null) {
 			QuestionCreatedEvent qe = new QuestionCreatedEvent(hq);
 			Bukkit.getServer().getPluginManager().callEvent(qe);
+			if (SimpleHelpOp.isMercuryEnabled()) {
+				MercuryAPI.sendGlobalMessage("question|"+player.getName(), "SimpleHelpOp");
+			}
 		} else {
 			player.sendMessage(ChatColor.RED
 					+ "Failed to send question, please try again later");
 		}
-
 		player.sendMessage(ChatColor.GREEN + "Your question was sent!");
 
 		return true;
