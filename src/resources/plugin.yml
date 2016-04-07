@@ -2,11 +2,12 @@ name: ${project.name}
 main: com.bigbrainiac10.simplehelpop.SimpleHelpOp
 version: ${project.version}
 author: bigbrainiac10
+authors: [ProgrammerDan]
 description: Allow players to request help.
 commands:
   helpop:
     description: Send a message for help
-    aliases: ho
+    aliases: [ho, ask]
     permission: simplehelpop.requesthelp
     usage: /<command> [MESSAGE]
   viewhelp:
