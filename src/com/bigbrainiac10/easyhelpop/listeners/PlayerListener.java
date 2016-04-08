@@ -1,4 +1,4 @@
-package com.bigbrainiac10.simplehelpop.listeners;
+package com.bigbrainiac10.easyhelpop.listeners;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -15,18 +15,18 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import com.bigbrainiac10.simplehelpop.HelpQuestion;
-import com.bigbrainiac10.simplehelpop.SHOConfigManager;
-import com.bigbrainiac10.simplehelpop.SimpleHelpOp;
-import com.bigbrainiac10.simplehelpop.Utility;
-import com.bigbrainiac10.simplehelpop.database.HelpOPData;
+import com.bigbrainiac10.easyhelpop.HelpQuestion;
+import com.bigbrainiac10.easyhelpop.EHOConfigManager;
+import com.bigbrainiac10.easyhelpop.EasyHelpOp;
+import com.bigbrainiac10.easyhelpop.Utility;
+import com.bigbrainiac10.easyhelpop.database.HelpOPData;
 
 public class PlayerListener implements Listener {
 	
-	private SimpleHelpOp plugin = SimpleHelpOp.getInstance();
+	private EasyHelpOp plugin = EasyHelpOp.getInstance();
 	private HelpOPData helpData = plugin.getHelpOPData();
-	private final String unansweredReady = Utility.safeToColor(SHOConfigManager.getPlayerMessage("unansweredReady"));
-	private final String replyMsg = Utility.safeToColor(SHOConfigManager.getPlayerMessage("replyReceived"));
+	private final String unansweredReady = Utility.safeToColor(EHOConfigManager.getPlayerMessage("unansweredReady"));
+	private final String replyMsg = Utility.safeToColor(EHOConfigManager.getPlayerMessage("replyReceived"));
 	
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void playerJoin(PlayerJoinEvent event){
@@ -70,7 +70,7 @@ public class PlayerListener implements Listener {
 			}.runTaskLater(plugin, 20l);
 		}
 		
-		if (player.hasPermission("simplehelpop.replyhelp")){
+		if (player.hasPermission("easyhelpop.replyhelp")){
 			List<?> u = helpData.getUnansweredQuestions();
 			if (u != null && u.size() > 0) {
 				new BukkitRunnable() {

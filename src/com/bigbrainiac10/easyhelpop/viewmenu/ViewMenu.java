@@ -1,4 +1,4 @@
-package com.bigbrainiac10.simplehelpop.viewmenu;
+package com.bigbrainiac10.easyhelpop.viewmenu;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,13 +18,13 @@ import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventory;
 import vg.civcraft.mc.civmodcore.inventorygui.ScheduledInventoryOpen;
 
-import com.bigbrainiac10.simplehelpop.HelpQuestion;
-import com.bigbrainiac10.simplehelpop.SimpleHelpOp;
-import com.bigbrainiac10.simplehelpop.Utility;
+import com.bigbrainiac10.easyhelpop.HelpQuestion;
+import com.bigbrainiac10.easyhelpop.EasyHelpOp;
+import com.bigbrainiac10.easyhelpop.Utility;
 
 public class ViewMenu{
 
-	private final SimpleHelpOp plugin = SimpleHelpOp.getInstance();
+	private final EasyHelpOp plugin = EasyHelpOp.getInstance();
 	
 	private List<HelpQuestion> questions;
 	
@@ -162,8 +162,8 @@ public class ViewMenu{
 	
 	public void setPageNum(int num){
 		pageNum = Math.max(1, Math.min(pageNumMax, num));
-		SimpleHelpOp.Log("Page Number: {0}", pageNum);
-		SimpleHelpOp.Log("Max Page Number: {0}", pageNumMax);
+		EasyHelpOp.Log("Page Number: {0}", pageNum);
+		EasyHelpOp.Log("Max Page Number: {0}", pageNumMax);
 		
 	}
 	}

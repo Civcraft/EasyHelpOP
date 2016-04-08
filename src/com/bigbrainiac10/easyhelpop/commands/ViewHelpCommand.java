@@ -1,4 +1,4 @@
-package com.bigbrainiac10.simplehelpop.commands;
+package com.bigbrainiac10.easyhelpop.commands;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -12,21 +12,21 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.bigbrainiac10.simplehelpop.HelpQuestion;
-import com.bigbrainiac10.simplehelpop.SHOConfigManager;
-import com.bigbrainiac10.simplehelpop.SimpleHelpOp;
-import com.bigbrainiac10.simplehelpop.Utility;
-import com.bigbrainiac10.simplehelpop.viewmenu.ViewMenu;
-import com.bigbrainiac10.simplehelpop.viewmenu.ViewType;
+import com.bigbrainiac10.easyhelpop.HelpQuestion;
+import com.bigbrainiac10.easyhelpop.EHOConfigManager;
+import com.bigbrainiac10.easyhelpop.EasyHelpOp;
+import com.bigbrainiac10.easyhelpop.Utility;
+import com.bigbrainiac10.easyhelpop.viewmenu.ViewMenu;
+import com.bigbrainiac10.easyhelpop.viewmenu.ViewType;
 
 public class ViewHelpCommand implements CommandExecutor {
 
-	private final SimpleHelpOp plugin;
-	private final String playerUnknown = Utility.safeToColor(SHOConfigManager.getPlayerMessage("playerUnknown"));
-	private final String idUnknown = Utility.safeToColor(SHOConfigManager.getPlayerMessage("idUnknown"));
-	private final String generalFailure = Utility.safeToColor(SHOConfigManager.getPlayerMessage("generalFailure"));
+	private final EasyHelpOp plugin;
+	private final String playerUnknown = Utility.safeToColor(EHOConfigManager.getPlayerMessage("playerUnknown"));
+	private final String idUnknown = Utility.safeToColor(EHOConfigManager.getPlayerMessage("idUnknown"));
+	private final String generalFailure = Utility.safeToColor(EHOConfigManager.getPlayerMessage("generalFailure"));
 
-	public ViewHelpCommand(SimpleHelpOp plugin) {
+	public ViewHelpCommand(EasyHelpOp plugin) {
 		this.plugin = plugin;
 	}
 

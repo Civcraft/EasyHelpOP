@@ -1,24 +1,24 @@
-package com.bigbrainiac10.simplehelpop.events;
+package com.bigbrainiac10.easyhelpop.events;
 
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import com.bigbrainiac10.simplehelpop.HelpQuestion;
+import com.bigbrainiac10.easyhelpop.HelpQuestion;
 
-public class QuestionCreatedEvent extends Event{
+public class QuestionAnsweredEvent extends Event{
 
 	private static final HandlerList handlers = new HandlerList();
 	
 	private HelpQuestion question;
 	
-	public QuestionCreatedEvent(HelpQuestion question){
+	public QuestionAnsweredEvent(HelpQuestion question){
 		this.question = question;
 	}
 	
 	public HelpQuestion getQuestion(){
 		return question;
 	}
-	
+
 	public HandlerList getHandlers(){
 		return handlers;
 	}
@@ -26,5 +26,5 @@ public class QuestionCreatedEvent extends Event{
 	public static HandlerList getHandlerList(){
 		return handlers;
 	}
-
+	
 }

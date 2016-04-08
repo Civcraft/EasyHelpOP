@@ -1,4 +1,4 @@
-package com.bigbrainiac10.simplehelpop.listeners;
+package com.bigbrainiac10.easyhelpop.listeners;
 
 import java.sql.SQLException;
 import java.util.UUID;
@@ -10,26 +10,26 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
-import com.bigbrainiac10.simplehelpop.HelpQuestion;
-import com.bigbrainiac10.simplehelpop.SHOConfigManager;
-import com.bigbrainiac10.simplehelpop.SimpleHelpOp;
-import com.bigbrainiac10.simplehelpop.Utility;
-import com.bigbrainiac10.simplehelpop.events.QuestionAnsweredEvent;
-import com.bigbrainiac10.simplehelpop.events.QuestionCreatedEvent;
+import com.bigbrainiac10.easyhelpop.HelpQuestion;
+import com.bigbrainiac10.easyhelpop.EHOConfigManager;
+import com.bigbrainiac10.easyhelpop.EasyHelpOp;
+import com.bigbrainiac10.easyhelpop.Utility;
+import com.bigbrainiac10.easyhelpop.events.QuestionAnsweredEvent;
+import com.bigbrainiac10.easyhelpop.events.QuestionCreatedEvent;
 
 public class QuestionListener implements Listener {
 
-	private SimpleHelpOp plugin = SimpleHelpOp.getInstance();
+	private EasyHelpOp plugin = EasyHelpOp.getInstance();
 	
-	private final String alertMsg = Utility.safeToColor(SHOConfigManager.getPlayerMessage("helperAlert"));
-	private final String replyMsg = Utility.safeToColor(SHOConfigManager.getPlayerMessage("replyReceived"));
+	private final String alertMsg = Utility.safeToColor(EHOConfigManager.getPlayerMessage("helperAlert"));
+	private final String replyMsg = Utility.safeToColor(EHOConfigManager.getPlayerMessage("replyReceived"));
 	
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void questionCreated(QuestionCreatedEvent event){
 		HelpQuestion question = event.getQuestion();
 		
 		for(Player player : Bukkit.getServer().getOnlinePlayers()){
-			if(player.hasPermission("simplehelpop.replyhelp")){
+			if(player.hasPermission("easyhelpop.replyhelp")){
 				player.sendMessage( alertMsg
 						.replace("%PLAYER%", Bukkit.getOfflinePlayer(UUID.fromString(question.asker_uuid)).getName())
 						.replace("%MESSAGE%", question.getQuestion())
@@ -37,7 +37,7 @@ public class QuestionListener implements Listener {
 			}
 		}
 		
-		SimpleHelpOp.Log("Player " + Bukkit.getOfflinePlayer(UUID.fromString(question.asker_uuid)).getName() + " requested help. (Help ID " + question.getEntryID() + ")");
+		EasyHelpOp.Log("Player " + Bukkit.getOfflinePlayer(UUID.fromString(question.asker_uuid)).getName() + " requested help. (Help ID " + question.getEntryID() + ")");
 	}
 	
 	@EventHandler(priority = EventPriority.NORMAL)
@@ -63,9 +63,9 @@ public class QuestionListener implements Listener {
 			} catch (SQLException e) {
 				plugin.getLogger().log(Level.SEVERE, "Failed to update question.", e);
 			}
-			SimpleHelpOp.Log("Player " + Bukkit.getOfflinePlayer(UUID.fromString(question.asker_uuid)).getName() + " received an answer and has seen it. (Help ID " + question.getEntryID() + ")");
+			EasyHelpOp.Log("Player " + Bukkit.getOfflinePlayer(UUID.fromString(question.asker_uuid)).getName() + " received an answer and has seen it. (Help ID " + question.getEntryID() + ")");
 		} else {
-			SimpleHelpOp.Log("Player " + Bukkit.getOfflinePlayer(UUID.fromString(question.asker_uuid)).getName() + " received an answer. (Help ID " + question.getEntryID() + ")");
+			EasyHelpOp.Log("Player " + Bukkit.getOfflinePlayer(UUID.fromString(question.asker_uuid)).getName() + " received an answer. (Help ID " + question.getEntryID() + ")");
 		}
 
 	}

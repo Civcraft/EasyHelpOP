@@ -1,4 +1,4 @@
-package com.bigbrainiac10.simplehelpop.database;
+package com.bigbrainiac10.easyhelpop.database;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -12,12 +12,12 @@ import java.util.logging.Level;
 
 import org.bukkit.entity.Player;
 
-import com.bigbrainiac10.simplehelpop.HelpQuestion;
-import com.bigbrainiac10.simplehelpop.SimpleHelpOp;
+import com.bigbrainiac10.easyhelpop.HelpQuestion;
+import com.bigbrainiac10.easyhelpop.EasyHelpOp;
 
 public class HelpOPData {
 	private Database db;
-	private SimpleHelpOp plugin = SimpleHelpOp.getInstance();
+	private EasyHelpOp plugin = EasyHelpOp.getInstance();
 	
 	private List<HelpQuestion> questionList;
 	
@@ -62,7 +62,7 @@ public class HelpOPData {
 	
 	public List<HelpQuestion> getUnviewedQuestions(Player player) throws SQLException{
 		if (player == null) {
-			SimpleHelpOp.Log(Level.WARNING, "Unable to get unviewed questions for a null player");
+			EasyHelpOp.Log(Level.WARNING, "Unable to get unviewed questions for a null player");
 			return new ArrayList<HelpQuestion>();
 		}
 		PreparedStatement ps = db.prepareStatement("SELECT help_id, ask_time, asker_uuid, question, reply_time, replier_uuid, reply, viewed FROM help_requests WHERE asker_uuid=? AND reply IS NOT NULL AND viewed=False;");
@@ -81,7 +81,7 @@ public class HelpOPData {
 	
 	public List<HelpQuestion> getUnansweredQuestions(UUID player) throws SQLException{
 		if (player == null) {
-			SimpleHelpOp.Log(Level.WARNING, "Unable to get unanswered questions for a null player");
+			EasyHelpOp.Log(Level.WARNING, "Unable to get unanswered questions for a null player");
 			return new ArrayList<HelpQuestion>();
 		}
 		PreparedStatement ps = db.prepareStatement("SELECT help_id, ask_time, asker_uuid, question, reply_time, replier_uuid, reply, viewed FROM help_requests WHERE asker_uuid=? AND reply IS NULL;");
@@ -189,7 +189,7 @@ public class HelpOPData {
 		if (rs.next()) {
 			helpQuestion = new HelpQuestion(rs.getInt(1), time, askerUUID, question);
 		} else {
-			SimpleHelpOp.Log("Using fallback last insert id retrieval");
+			EasyHelpOp.Log("Using fallback last insert id retrieval");
 			ps = db.prepareStatement("SELECT LAST_INSERT_ID();");
 			ps.execute();
 			rs = ps.getResultSet();

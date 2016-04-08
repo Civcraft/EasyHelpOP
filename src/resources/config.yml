@@ -3,7 +3,7 @@ db:
  user: "root"
  pass: "root"
  hostname: "localhost"
- dbname: "simple_op_help"
+ dbname: "easyhelpop"
  port: 3306
 msg:
  unansweredReady: "&cThere are unanswered questions from players.  \nUse /viewhelp to answer them."

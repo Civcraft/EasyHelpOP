@@ -1,4 +1,4 @@
-package com.bigbrainiac10.simplehelpop.commands;
+package com.bigbrainiac10.easyhelpop.commands;
 
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -9,19 +9,19 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.bigbrainiac10.simplehelpop.HelpQuestion;
-import com.bigbrainiac10.simplehelpop.SHOConfigManager;
-import com.bigbrainiac10.simplehelpop.SimpleHelpOp;
-import com.bigbrainiac10.simplehelpop.Utility;
-import com.bigbrainiac10.simplehelpop.events.QuestionCreatedEvent;
+import com.bigbrainiac10.easyhelpop.HelpQuestion;
+import com.bigbrainiac10.easyhelpop.EHOConfigManager;
+import com.bigbrainiac10.easyhelpop.EasyHelpOp;
+import com.bigbrainiac10.easyhelpop.Utility;
+import com.bigbrainiac10.easyhelpop.events.QuestionCreatedEvent;
 
 public class HelpOPCommand implements CommandExecutor {
 
-	private final SimpleHelpOp plugin;
-	private final String addedMsg = Utility.safeToColor(SHOConfigManager.getPlayerMessage("questionAdded"));
-	private final String failureMsg = Utility.safeToColor(SHOConfigManager.getPlayerMessage("questionFailure"));
+	private final EasyHelpOp plugin;
+	private final String addedMsg = Utility.safeToColor(EHOConfigManager.getPlayerMessage("questionAdded"));
+	private final String failureMsg = Utility.safeToColor(EHOConfigManager.getPlayerMessage("questionFailure"));
 	
-	public HelpOPCommand(SimpleHelpOp plugin) {
+	public HelpOPCommand(EasyHelpOp plugin) {
 		this.plugin = plugin;
 	}
 	

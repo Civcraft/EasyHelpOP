@@ -1,12 +1,12 @@
-package com.bigbrainiac10.simplehelpop;
+package com.bigbrainiac10.easyhelpop;
 
 import org.bukkit.configuration.file.FileConfiguration;
 
-public class SHOConfigManager {
+public class EHOConfigManager {
 
 	private static FileConfiguration config;
 	
-	public SHOConfigManager(FileConfiguration con){
+	public EHOConfigManager(FileConfiguration con){
 		config = con;
 	}
 	

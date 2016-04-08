@@ -1,4 +1,4 @@
-package com.bigbrainiac10.simplehelpop.database;
+package com.bigbrainiac10.easyhelpop.database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

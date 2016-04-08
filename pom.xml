@@ -4,11 +4,11 @@
                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.bigbrainiac10</groupId>
-  <artifactId>simplehelpop</artifactId>
+  <artifactId>easyhelpop</artifactId>
   <packaging>jar</packaging>
-  <version>1.0.1</version>
-  <name>SimpleHelpOP</name>
-  <url>https://github.com/DevotedMC/SimpleHelpOP</url>
+  <version>1.0.2</version>
+  <name>EasyHelpOP</name>
+  <url>https://github.com/DevotedMC/EasyHelpOP</url>
   
   <build>
     <pluginManagement>

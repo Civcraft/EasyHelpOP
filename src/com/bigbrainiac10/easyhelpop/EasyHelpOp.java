@@ -1,21 +1,21 @@
-package com.bigbrainiac10.simplehelpop;
+package com.bigbrainiac10.easyhelpop;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.bigbrainiac10.simplehelpop.commands.HelpOPCommand;
-import com.bigbrainiac10.simplehelpop.commands.ViewHelpCommand;
-import com.bigbrainiac10.simplehelpop.database.Database;
-import com.bigbrainiac10.simplehelpop.database.HelpOPData;
-import com.bigbrainiac10.simplehelpop.listeners.PlayerListener;
-import com.bigbrainiac10.simplehelpop.listeners.QuestionListener;
+import com.bigbrainiac10.easyhelpop.commands.HelpOPCommand;
+import com.bigbrainiac10.easyhelpop.commands.ViewHelpCommand;
+import com.bigbrainiac10.easyhelpop.database.Database;
+import com.bigbrainiac10.easyhelpop.database.HelpOPData;
+import com.bigbrainiac10.easyhelpop.listeners.PlayerListener;
+import com.bigbrainiac10.easyhelpop.listeners.QuestionListener;
 
-public class SimpleHelpOp extends JavaPlugin{
+public class EasyHelpOp extends JavaPlugin{
 
 	private static Database _db;
-	private static SimpleHelpOp _instance;
+	private static EasyHelpOp _instance;
 	private static Logger _logger;
 	private static HelpOPData _helpData;
 	
@@ -25,7 +25,7 @@ public class SimpleHelpOp extends JavaPlugin{
 		
 		saveDefaultConfig();
 		reloadConfig();
-		new SHOConfigManager(getConfig());
+		new EHOConfigManager(getConfig());
 		
 		initializeDatabase();
 		_helpData = new HelpOPData(_db);
@@ -54,7 +54,7 @@ public class SimpleHelpOp extends JavaPlugin{
 		return _db;
 	}
 	
-	public static SimpleHelpOp getInstance(){
+	public static EasyHelpOp getInstance(){
 		return _instance;
 	}
 	
@@ -63,11 +63,11 @@ public class SimpleHelpOp extends JavaPlugin{
 	}
 	
 	private void initializeDatabase(){
-		String host = SHOConfigManager.getHostName();
-		String user = SHOConfigManager.getUserName();
-		String password = SHOConfigManager.getPassword();
-		int port = SHOConfigManager.getPort();
-		String dbName = SHOConfigManager.getDBName();
+		String host = EHOConfigManager.getHostName();
+		String user = EHOConfigManager.getUserName();
+		String password = EHOConfigManager.getPassword();
+		int port = EHOConfigManager.getPort();
+		String dbName = EHOConfigManager.getDBName();
 		
 		_db = new Database(host, port, dbName, user, password, getLogger());
 	}

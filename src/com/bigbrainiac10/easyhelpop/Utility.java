@@ -1,4 +1,4 @@
-package com.bigbrainiac10.simplehelpop;
+package com.bigbrainiac10.easyhelpop;
 
 import org.bukkit.ChatColor;
 

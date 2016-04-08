@@ -1,4 +1,4 @@
-package com.bigbrainiac10.simplehelpop.viewmenu;
+package com.bigbrainiac10.easyhelpop.viewmenu;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -13,18 +13,18 @@ import org.bukkit.conversations.Prompt;
 import org.bukkit.conversations.StringPrompt;
 import org.bukkit.entity.Player;
 
-import com.bigbrainiac10.simplehelpop.HelpQuestion;
-import com.bigbrainiac10.simplehelpop.SHOConfigManager;
-import com.bigbrainiac10.simplehelpop.SimpleHelpOp;
-import com.bigbrainiac10.simplehelpop.Utility;
-import com.bigbrainiac10.simplehelpop.events.QuestionAnsweredEvent;
+import com.bigbrainiac10.easyhelpop.HelpQuestion;
+import com.bigbrainiac10.easyhelpop.EHOConfigManager;
+import com.bigbrainiac10.easyhelpop.EasyHelpOp;
+import com.bigbrainiac10.easyhelpop.Utility;
+import com.bigbrainiac10.easyhelpop.events.QuestionAnsweredEvent;
 
 public class ReplyQuestionConversation extends StringPrompt{
 
-	private SimpleHelpOp plugin = SimpleHelpOp.getInstance();
+	private EasyHelpOp plugin = EasyHelpOp.getInstance();
 	
-	private final String replyAdded = Utility.safeToColor(SHOConfigManager.getPlayerMessage("replyAdded"));
-	private final String replyStart = Utility.safeToColor(SHOConfigManager.getPlayerMessage("replyStart"));
+	private final String replyAdded = Utility.safeToColor(EHOConfigManager.getPlayerMessage("replyAdded"));
+	private final String replyStart = Utility.safeToColor(EHOConfigManager.getPlayerMessage("replyStart"));
 	
 	private HelpQuestion question;
 	private UUID player;

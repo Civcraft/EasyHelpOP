@@ -1,4 +1,4 @@
-package com.bigbrainiac10.simplehelpop.viewmenu;
+package com.bigbrainiac10.easyhelpop.viewmenu;
 
 public enum ViewType {
 
