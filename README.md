@@ -1,6 +1,6 @@
 # EasyHelpOP
 
-Brought to you by the developers of https://www.reddit.com/r/Devoted and https://www.github.com/DevotedMC -- check out our server at play.devotedmc.com
+Brought to you by the developers from https://www.reddit.com/r/Devoted and https://www.github.com/DevotedMC -- check out our server at play.devotedmc.com
 
 ## For Anybody
 
