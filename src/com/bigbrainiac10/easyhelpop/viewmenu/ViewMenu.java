@@ -93,7 +93,7 @@ public class ViewMenu{
 					int id = Integer.parseInt(this.getItemStack().getItemMeta().getDisplayName().split(" ")[2]);
 					HelpQuestion q = plugin.getHelpOPData().getUnansweredByID(id);
 					
-					if (q.replier_uuid != null) {
+					if (q == null || q.replier_uuid != null) {
 						return;
 					}
 					
