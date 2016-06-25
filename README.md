@@ -87,3 +87,7 @@ EasyHelpOP uses a database to track all questions and replies. To configure it, 
       port: 3306
 
 Adjust to fit your server's database. Currently only MySQL/MariaDB are supported.
+
+## Dependencies
+
+EasyHelpOp depends on CivModCore for its Clickable library, version 1.4.3.
