@@ -6,6 +6,8 @@ import java.util.logging.Logger;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.bigbrainiac10.easyhelpop.commands.HelpOPCommand;
+import com.bigbrainiac10.easyhelpop.commands.IgnoreHelpCommand;
+import com.bigbrainiac10.easyhelpop.commands.ReplyHelpCommand;
 import com.bigbrainiac10.easyhelpop.commands.ViewHelpCommand;
 import com.bigbrainiac10.easyhelpop.database.Database;
 import com.bigbrainiac10.easyhelpop.database.HelpOPData;
@@ -80,6 +82,8 @@ public class EasyHelpOp extends JavaPlugin{
 	private void registerCommands(){
 		_instance.getCommand("helpop").setExecutor(new HelpOPCommand(this));
 		_instance.getCommand("viewhelp").setExecutor(new ViewHelpCommand(this));
+		_instance.getCommand("ignorehelp").setExecutor(new IgnoreHelpCommand(this));
+		_instance.getCommand("replyhelp").setExecutor(new ReplyHelpCommand(this));
 	}
 	
 }

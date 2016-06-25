@@ -55,7 +55,7 @@ public class HelpOPCommand implements CommandExecutor {
 		} catch (SQLException e) {
 			player.sendMessage(failureMsg);
 			plugin.getLogger().log(Level.SEVERE, "Failed to add question.", e);
-			return false;
+			return true;
 		}
 		
 		player.sendMessage(addedMsg);

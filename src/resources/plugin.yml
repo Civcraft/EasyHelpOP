@@ -14,6 +14,14 @@ commands:
     description: List and reply to questions in an interactive setting.
     permission: easyhelpop.replyhelp
     usage: /<command> [all|id|name [ID|NAME]
+  replyhelp:
+    description: Reply to a specific question by ID.
+    permission: easyhelpop.replyhelp
+    usage: /<command> [ID]
+  ignorehelp:
+    description: Ignore a specific question by ID.
+    permission: easyhelpop.ignorehelp
+    usage: /<command> [ID]
 permissions:
   easyhelpop.requesthelp:
     description: Allow a player to request help
@@ -21,9 +29,13 @@ permissions:
   easyhelpop.replyhelp:
     description: Allow a player to reply to a question
     default: op
+  easyhelpop.ignorehelp:
+    description: Allow a player to ignore a question (mark as resolved with no answer)
+    default: op
   easyhelpop.*:
     description: Grant all easyhelpop permissions
     default: op
     children:
       easyhelpop.replyhelp: true
       easyhelpop.requesthelp: true
+      easyhelpop.ignorehelp: true

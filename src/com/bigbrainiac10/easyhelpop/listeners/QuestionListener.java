@@ -44,9 +44,19 @@ public class QuestionListener implements Listener {
 	public void questionAnswered(QuestionAnsweredEvent event){
 		HelpQuestion question = event.getQuestion();
 		
-		Player p = Bukkit.getPlayer(UUID.fromString(question.replier_uuid));
-		if (p == null) {
-			p = (Player) Bukkit.getOfflinePlayer(UUID.fromString(question.replier_uuid));
+		Player p = null;
+		UUID pu = null;
+		try {
+			pu = UUID.fromString(question.replier_uuid);
+		} catch (IllegalArgumentException iae) {
+			pu = null;
+		}
+		
+		if (pu != null) {
+			p = Bukkit.getPlayer(pu);
+			if (p == null) {
+				p = (Player) Bukkit.getOfflinePlayer(pu);
+			}
 		}
 		Player a = Bukkit.getPlayer(UUID.fromString(question.asker_uuid));
 		if (a != null) {

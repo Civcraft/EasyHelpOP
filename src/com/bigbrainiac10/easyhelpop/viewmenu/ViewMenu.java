@@ -55,7 +55,7 @@ public class ViewMenu{
 	public void openMenu(){
 		ClickableInventory.forceCloseInventory(player);
 		
-		ClickableInventory menu = new ClickableInventory(54, title+" - Page #"+pageNum);
+		ClickableInventory menu = new ClickableInventory(54, String.format("%s %s - Page #%d", viewType, title, pageNum));
 		
 		for(int i=(pageNum*45)-45; i<pageNum*45; i++){
 			if(i > questions.size()-1)
@@ -65,7 +65,7 @@ public class ViewMenu{
 			
 			List<String> lore = new ArrayList<String>();
 			
-			lore.add("Sent in by: "+Bukkit.getServer().getOfflinePlayer(UUID.fromString(question.asker_uuid)).getName());
+			lore.add("Asked by: "+Bukkit.getServer().getOfflinePlayer(UUID.fromString(question.asker_uuid)).getName());
 			lore.add(ChatColor.GRAY + "Question:");
 			
 			for(String str : Utility.loreWrap(question.getQuestion()).split("\n")){
@@ -139,9 +139,11 @@ public class ViewMenu{
 			}
 		};
 		
-		menu.setSlot(backClick, 45);
+		if (pageNum > 1)
+			menu.setSlot(backClick, 45);
 		menu.setSlot(closeClick, 49);
-		menu.setSlot(forwardClick, 53);
+		if (pageNum < pageNumMax)
+			menu.setSlot(forwardClick, 53);
 		
 		ScheduledInventoryOpen.schedule(plugin, menu, player);
 	}
@@ -162,8 +164,6 @@ public class ViewMenu{
 	
 	public void setPageNum(int num){
 		pageNum = Math.max(1, Math.min(pageNumMax, num));
-		EasyHelpOp.Log("Page Number: {0}", pageNum);
-		EasyHelpOp.Log("Max Page Number: {0}", pageNumMax);
-		
+		EasyHelpOp.Log("Page Number: {0} out of {1}", pageNum, pageNumMax);	
 	}
-	}
+}

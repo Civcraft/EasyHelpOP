@@ -17,3 +17,4 @@ msg:
  idUnknown: "&cNo question with that ID exists."
  generalFailure: "&cSomething terrible happened, please try again."
  replyStart: "&bEnter a reply to: &a%QUESTION%.  \n&fType &ncancel&r&f to exit out of prompt."
+ ignoreQuestion: "&cYou've chosen to ignore: &a%QUESTION%"

@@ -3,15 +3,13 @@ package com.bigbrainiac10.easyhelpop.viewmenu;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Calendar;
-import java.util.UUID;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
+import org.bukkit.command.CommandSender;
 import org.bukkit.conversations.ConversationContext;
 import org.bukkit.conversations.Prompt;
 import org.bukkit.conversations.StringPrompt;
-import org.bukkit.entity.Player;
 
 import com.bigbrainiac10.easyhelpop.HelpQuestion;
 import com.bigbrainiac10.easyhelpop.EHOConfigManager;
@@ -19,7 +17,7 @@ import com.bigbrainiac10.easyhelpop.EasyHelpOp;
 import com.bigbrainiac10.easyhelpop.Utility;
 import com.bigbrainiac10.easyhelpop.events.QuestionAnsweredEvent;
 
-public class ReplyQuestionConversation extends StringPrompt{
+public class ConsoleReplyQuestionConversation extends StringPrompt{
 
 	private EasyHelpOp plugin = EasyHelpOp.getInstance();
 	
@@ -27,11 +25,11 @@ public class ReplyQuestionConversation extends StringPrompt{
 	private final String replyStart = Utility.safeToColor(EHOConfigManager.getPlayerMessage("replyStart"));
 	
 	private HelpQuestion question;
-	private UUID player;
+	private String player;
 	
-	public ReplyQuestionConversation(HelpQuestion question, Player player){
+	public ConsoleReplyQuestionConversation(HelpQuestion question, CommandSender player){
 		this.question = question;
-		this.player = player.getUniqueId();
+		this.player = player.getName();
 	}
 	
 	@Override
@@ -40,7 +38,7 @@ public class ReplyQuestionConversation extends StringPrompt{
 		
 		question.replyTime = time;
 		question.reply = answer;
-		question.replier_uuid = player.toString();
+		question.replier_uuid = player;
 		
 		try {
 			plugin.getHelpOPData().updateQuestion(question);
