@@ -16,11 +16,19 @@ Helpers can use `/viewhelp` to see an interactive list of unanswered questions.
 
 Use `/viewhelp all` to see all questions
 
-Use `/viewhelp [id]` to see a single question by ID
+Use `/viewhelp id [id]` to see a single question by ID
 
-Use `/viewhelp [player name]` to see a list of all questions asked by a single player
+Use `/viewhelp name [player name]` to see a list of all questions asked by a single player
 
-All lists are represented by an in-game GUI.
+Use `/ignorehelp [id]` to ignore a single question by ID
+
+Use `/replyhelp [id]` to reply to a single question by ID
+
+All lists are represented by an in-game GUI. For console admins, colored lists are used to allow them to participate.
+
+For in-game, to answer a question, just click on it and you will be prompted to provide an answer. Type `cancel` to abandon answering; the question will remain unanswered. 
+
+While one helper is answering, other helpers are prevented from answering (via the `reservationTimeout` configuration). 
 
 ## Permissions
 
@@ -36,6 +44,8 @@ All visible replies are fully configurable, so you can easily tune this plugin t
 Check out the example configuration in `/src/resources/config.yml` for more details.
 
 Set `debug:` to true if you want extra console information on what EasyHelpOP is doing.
+
+Set `reservationTimeout:` to the number of milliseconds to "reserve" a question when a helper begins answering it. This is to prevent helpers trying to answer the same question and resulting in player confusion.
 
 The full set of `msg.*` configuration options are as follows:
 
@@ -60,6 +70,10 @@ The full set of `msg.*` configuration options are as follows:
 `generalFailure:` General catchall for errors, sent to the user whose action caused the unknown error
 
 `replyStart:` Interaction start message while answering a question after selecting it from a `/viewhelp` menu. Use `%QUESTION%` as a placeholder for the text of the question. Might be worth mentioning that typing `cancel` will gracefully exit out of the answering session without sending anything to the player.
+
+`ignoreQuestion:` Message replied to helper if they chose to ignore a question using `/ignorehelp [id]`. This decision is logged.
+
+`reserved:` EasyHelpOp automatically prevents multiple helpers from answering the same question at the same time, to reduce player confusion. This message is sent to a helper trying to answer a question that someone else is answering.
 
 ## Database
 
