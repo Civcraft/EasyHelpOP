@@ -14,6 +14,8 @@ public class HelpQuestion {
 	
 	private boolean viewed;
 	
+	private Long reserved;
+	
 	public HelpQuestion(int entryID, Timestamp ask_time, String asker_uuid, String question, Timestamp replyTime, String replier_uuid, String reply, boolean viewed){
 		this.entryID = entryID;
 		this.ask_time = ask_time;
@@ -52,4 +54,22 @@ public class HelpQuestion {
 		return this.entryID;
 	}
 	
+	public synchronized boolean reserve() {
+		if (this.reserved != null) {
+			long now = System.currentTimeMillis();
+			if (now - this.reserved < EHOConfigManager.getReservationTimeout()) {
+				return false;
+			}
+		}// else
+		this.reserved = System.currentTimeMillis();
+		return true;
+	}
+	
+	public boolean isReserved() {
+		return this.reserved != null;
+	}
+	
+	public void release() {
+		this.reserved = null;
+	}
 }

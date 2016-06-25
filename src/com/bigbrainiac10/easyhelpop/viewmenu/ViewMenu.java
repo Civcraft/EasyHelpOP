@@ -18,11 +18,14 @@ import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventory;
 import vg.civcraft.mc.civmodcore.inventorygui.ScheduledInventoryOpen;
 
+import com.bigbrainiac10.easyhelpop.EHOConfigManager;
 import com.bigbrainiac10.easyhelpop.HelpQuestion;
 import com.bigbrainiac10.easyhelpop.EasyHelpOp;
 import com.bigbrainiac10.easyhelpop.Utility;
 
 public class ViewMenu{
+	
+	private final String reserved = Utility.safeToColor(EHOConfigManager.getPlayerMessage("reserved"));
 
 	private final EasyHelpOp plugin = EasyHelpOp.getInstance();
 	
@@ -65,17 +68,27 @@ public class ViewMenu{
 			
 			List<String> lore = new ArrayList<String>();
 			
-			lore.add("Asked by: "+Bukkit.getServer().getOfflinePlayer(UUID.fromString(question.asker_uuid)).getName());
-			lore.add(ChatColor.GRAY + "Question:");
+			if (question.isReserved()) {
+				lore.add(ChatColor.ITALIC + "" + ChatColor.GOLD + "Another helper is answering this one.");
+			}
+			
+			lore.add("Asked by: " + ChatColor.AQUA + Bukkit.getServer().getOfflinePlayer(UUID.fromString(question.asker_uuid)).getName());
+			lore.add(ChatColor.GRAY + "" + ChatColor.BOLD + "Question:");
 			
 			for(String str : Utility.loreWrap(question.getQuestion()).split("\n")){
-				lore.add(ChatColor.GRAY + "" + ChatColor.ITALIC + str);
+				lore.add(ChatColor.WHITE + "" + ChatColor.ITALIC + str);
 			}
 			
 			if(!(question.replier_uuid == null)){
+				try {
+					String replier = Bukkit.getServer().getOfflinePlayer(UUID.fromString(question.replier_uuid)).getName();
+					lore.add(ChatColor.DARK_PURPLE + "" + ChatColor.ITALIC + "Reply by: " + ChatColor.GOLD + replier);
+				} catch (NullPointerException | IllegalArgumentException e) {
+					lore.add(ChatColor.DARK_PURPLE + "" + ChatColor.ITALIC + "Reply by: " + ChatColor.GOLD + question.replier_uuid);
+				}
 				lore.add(ChatColor.GRAY + "" + ChatColor.BOLD + "Reply:");
 				for(String str : Utility.loreWrap(question.reply).split("\n")){
-					lore.add(ChatColor.GRAY + "" + ChatColor.ITALIC + "" + ChatColor.BOLD + str);
+					lore.add(ChatColor.WHITE + "" + ChatColor.ITALIC + str);
 				}
 			}
 			
@@ -97,13 +110,17 @@ public class ViewMenu{
 						return;
 					}
 					
-					ConversationFactory cf = new ConversationFactory(plugin);
-					Conversation conv = cf.withFirstPrompt(new ReplyQuestionConversation(q, p))
-								.withLocalEcho(true)
-								.withEscapeSequence("cancel")
-								.withModality(false)
-								.buildConversation(p);
-					conv.begin();
+					if (q.reserve()) {
+						ConversationFactory cf = new ConversationFactory(plugin);
+						Conversation conv = cf.withFirstPrompt(new ReplyQuestionConversation(q, p))
+									.withLocalEcho(true)
+									.withConversationCanceller(new CancelQuestionConversation(q))
+									.withModality(false)
+									.buildConversation(p);
+						conv.begin();
+					} else {
+						p.sendMessage(reserved);
+					}
 					
 					ClickableInventory.forceCloseInventory(p);
 				}

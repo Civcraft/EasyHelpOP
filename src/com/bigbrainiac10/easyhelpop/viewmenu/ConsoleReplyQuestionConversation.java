@@ -35,7 +35,7 @@ public class ConsoleReplyQuestionConversation extends StringPrompt{
 	@Override
 	public Prompt acceptInput(ConversationContext con, String answer) {
 		Timestamp time = new Timestamp(Calendar.getInstance().getTimeInMillis());
-		
+
 		question.replyTime = time;
 		question.reply = answer;
 		question.replier_uuid = player;
@@ -47,6 +47,7 @@ public class ConsoleReplyQuestionConversation extends StringPrompt{
 			con.getForWhom().sendRawMessage(replyAdded);
 		} catch (SQLException e) {
 			plugin.getLogger().log(Level.SEVERE, "Failed to update question.", e);
+			question.release();
 		}
 		
 		return Prompt.END_OF_CONVERSATION;

@@ -178,7 +178,9 @@ public class ViewHelpCommand implements CommandExecutor {
 		} else {
 			for (HelpQuestion question : aq) {
 				StringBuffer qq = new StringBuffer("  ");
+				qq.append(question.isReserved() ? ChatColor.GRAY : ChatColor.GREEN);
 				qq.append(question.getEntryID());
+				qq.append(ChatColor.RESET);
 				qq.append(". ");
 				qq.append(Bukkit.getServer().getOfflinePlayer(UUID.fromString(question.asker_uuid)).getName());
 				qq.append(" Asked \"");

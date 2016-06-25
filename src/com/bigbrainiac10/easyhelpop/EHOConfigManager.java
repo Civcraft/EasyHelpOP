@@ -37,5 +37,8 @@ public class EHOConfigManager {
 	public static boolean getDebug(){
 		return config.getBoolean("debug");
 	}
-	
+
+	public static long getReservationTimeout() {
+		return config.getLong("reservationTimeout", 60000l);
+	}
 }

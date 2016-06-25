@@ -44,6 +44,8 @@ public class QuestionListener implements Listener {
 	public void questionAnswered(QuestionAnsweredEvent event){
 		HelpQuestion question = event.getQuestion();
 		
+		question.release();
+		
 		Player p = null;
 		UUID pu = null;
 		try {

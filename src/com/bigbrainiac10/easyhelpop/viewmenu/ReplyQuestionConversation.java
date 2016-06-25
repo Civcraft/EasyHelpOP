@@ -7,7 +7,6 @@ import java.util.UUID;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.conversations.ConversationContext;
 import org.bukkit.conversations.Prompt;
 import org.bukkit.conversations.StringPrompt;
@@ -49,6 +48,7 @@ public class ReplyQuestionConversation extends StringPrompt{
 			con.getForWhom().sendRawMessage(replyAdded);
 		} catch (SQLException e) {
 			plugin.getLogger().log(Level.SEVERE, "Failed to update question.", e);
+			question.release();
 		}
 		
 		return Prompt.END_OF_CONVERSATION;

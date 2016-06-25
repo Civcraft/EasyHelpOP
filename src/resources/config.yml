@@ -18,3 +18,6 @@ msg:
  generalFailure: "&cSomething terrible happened, please try again."
  replyStart: "&bEnter a reply to: &a%QUESTION%.  \n&fType &ncancel&r&f to exit out of prompt."
  ignoreQuestion: "&cYou've chosen to ignore: &a%QUESTION%"
+ reserved: "&bSomeone else is already answering this question, give it a minute before checking again."
+# How long to keep a reservation on answering before timing out? In milliseconds.
+reservationTimeout: 60000

@@ -27,6 +27,7 @@ public class IgnoreHelpCommand implements CommandExecutor {
 	private final String idUnknown = Utility.safeToColor(EHOConfigManager.getPlayerMessage("idUnknown"));
 	private final String generalFailure = Utility.safeToColor(EHOConfigManager.getPlayerMessage("generalFailure"));
 	private final String ignoreQuestion = Utility.safeToColor(EHOConfigManager.getPlayerMessage("ignoreQuestion"));
+	private final String reserved = Utility.safeToColor(EHOConfigManager.getPlayerMessage("reserved"));
 
 	public IgnoreHelpCommand(EasyHelpOp plugin) {
 		this.plugin = plugin;
@@ -39,19 +40,24 @@ public class IgnoreHelpCommand implements CommandExecutor {
 				HelpQuestion question = plugin.getHelpOPData().getUnansweredByID(Integer.parseInt(args[0]));
 				
 				if (question != null) {
-					Timestamp time = new Timestamp(Calendar.getInstance().getTimeInMillis());
-					
-					question.replyTime = time;
-					question.reply = "";
-					question.replier_uuid = (sender instanceof Player ? ((Player)sender).getUniqueId().toString() : sender.getName());
-					question.setViewed(true);
-					
-					try {
-						plugin.getHelpOPData().updateQuestion(question);
-						sender.sendMessage(ignoreQuestion.replace("%QUESTION%", question.getQuestion()));
-					} catch (SQLException e) {
-						plugin.getLogger().log(Level.SEVERE, "Failed to update question.", e);
-						sender.sendMessage(generalFailure);
+					if (question.reserve()) {
+						Timestamp time = new Timestamp(Calendar.getInstance().getTimeInMillis());
+						
+						question.replyTime = time;
+						question.reply = "";
+						question.replier_uuid = (sender instanceof Player ? ((Player)sender).getUniqueId().toString() : sender.getName());
+						question.setViewed(true);
+						
+						try {
+							plugin.getHelpOPData().updateQuestion(question);
+							sender.sendMessage(ignoreQuestion.replace("%QUESTION%", question.getQuestion()));
+						} catch (SQLException e) {
+							plugin.getLogger().log(Level.SEVERE, "Failed to update question.", e);
+							sender.sendMessage(generalFailure);
+						}
+						question.release();
+					} else {
+						sender.sendMessage(reserved);
 					}
 				} else {
 					plugin.getLogger().log(Level.INFO, "Failed to find question id: {0}", args[0]);
